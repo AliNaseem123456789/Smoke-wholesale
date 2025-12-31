@@ -1,76 +1,106 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+import { Breadcrumbs } from './components/Breadcrumbs'; // <-- new
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import TopWarningMarquee from './components/TopWarningMarquee';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { Toaster } from './components/ui/sonner';
+
+// Pages
 import { HomePage } from './pages/HomePage';
 import { BrandProductsPage } from './pages/BrandProductsPage';
+import { CategoryProductsPage } from './pages/CategoryProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { CartPage } from './pages/CartPage';
 import { ContactPage } from './pages/ContactPage';
-import { BrandsPage } from './pages/BrandsPage';
-import { Toaster } from './components/ui/sonner';
 import { BrandList } from './pages/Brandlist';
-import { HomeProductDetailPage } from './pages/HomeProductDetails';
-// Helper wrapper for pages needing navigation
-const withNavigation = (Component: React.FC<{ onNavigate?: (path: string) => void }>) => {
-  return (props: any) => {
-    const navigate = useNavigate();
-    return <Component {...props} onNavigate={navigate} />;
-  };
-};
-// Wrapper to extract productId from params and pass to HomeProductDetailPage
-const HomeProductDetailPageWrapper: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
+
+/* -------------------- WRAPPERS -------------------- */
+
+// Brand products wrapper
+const BrandProductsPageWrapper = () => {
+  const { brandName } = useParams();
   const navigate = useNavigate();
-  if (!productId) return null; // optional safety
-  return <HomeProductDetailPage productId={productId} onNavigate={navigate} />;
+
+  if (!brandName) return null;
+
+  return (
+    <BrandProductsPage
+      brandName={decodeURIComponent(brandName)}
+      onNavigate={navigate}
+    />
+  );
 };
 
-// Typed route params for Brand and Product pages
-interface BrandParams {
-  brandName: string;
-}
+// Category products wrapper ✅
+const CategoryProductsPageWrapper = () => {
+  const { categoryName } = useParams();
+  const navigate = useNavigate();
 
-interface ProductParams {
-  productId: string;
-}
+  if (!categoryName) return null;
+
+  return (
+    <CategoryProductsPage
+      categoryName={decodeURIComponent(categoryName)}
+      onNavigate={navigate}
+    />
+  );
+};
+
+
+
+/* -------------------- APP -------------------- */
 
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
+          
           <Header />
+
           <main className="flex-1">
+            {/* <Breadcrumbs /> Add breadcrumb here */}
             <Routes>
               <Route path="/" element={<HomePage />} />
+
+              {/* Brand */}
               <Route
                 path="/brand/:brandName"
-                element={
-                  <BrandProductsPageWrapper />
-                }
+                element={<BrandProductsPageWrapper />}
               />
-              
+
+              {/* Category ✅ */}
               <Route
-                path="/product1/:productId"
-                element={
-                  <HomeProductDetailPageWrapper />
-                }
+                path="/category/:categoryName"
+                element={<CategoryProductsPageWrapper />}
               />
+
+              
               <Route path="/product/:id" element={<ProductDetailPage />} />
 
+              {/* Auth */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegistrationPage />} />
+
+              {/* Other pages */}
               <Route path="/cart" element={<CartPage />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/brands" element={<BrandsPage />} />
-              <Route path="/brandlist" element={<BrandList/>}/>
+             
+              <Route path="/brand" element={<BrandList />} />
             </Routes>
           </main>
+
           <Footer />
           <Toaster position="top-center" richColors />
         </Router>
@@ -78,18 +108,5 @@ function App() {
     </AuthProvider>
   );
 }
-
-// Wrappers to extract typed params
-const BrandProductsPageWrapper: React.FC = () => {
-  const { brandName } = useParams<BrandParams>();
-  const navigate = useNavigate();
-  return <BrandProductsPage brandName={brandName} onNavigate={navigate} />;
-};
-
-const ProductDetailPageWrapper: React.FC = () => {
-  const { productId } = useParams<ProductParams>();
-  const navigate = useNavigate();
-  return <ProductDetailPage productId={productId} onNavigate={navigate} />;
-};
 
 export default App;

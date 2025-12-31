@@ -12,8 +12,8 @@ interface Product {
   created_at?: string;
 }
 
-interface BrandProductsPageProps {
-  brandName?: string;
+interface CategoryProductsPageProps {
+  categoryName?: string;
   onNavigate: (path: string) => void;
 }
 
@@ -22,38 +22,31 @@ const possibleExtensions = ["jpg", "jpeg", "png", "webp"];
 // Helper to get folder name
 const getFolderName = (title: string) => {
   return title
-
-      .trim()
-    // Replace ALL spaces with _
+    .trim()
     .replace(/\s+/g, "_")
-    // Replace special characters ( ) & % # . with _
-    .replace(/[()&%#.+,!]/g, "_")
-    // Keep - as is, remove everything else
-   
+    .replace(/[()&%#.+,]/g, "_");
 };
 
-// Helper to generate image URLs for a product
+// Generate image URLs
 const generateImageUrls = (productTitle: string): string[] => {
   const folderName = getFolderName(productTitle);
   const urls: string[] = [];
-  
-  // Generate for image 1 with all extensions (most common case)
+
   for (let ext of possibleExtensions) {
     urls.push(`/product-images/${folderName}/1.${ext}`);
   }
-  
-  // Fallback to other image numbers
+
   for (let i = 2; i <= 5; i++) {
     for (let ext of possibleExtensions) {
       urls.push(`/product-images/${folderName}/${i}.${ext}`);
     }
   }
-  
+
   return urls;
 };
 
-export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
-  brandName,
+export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
+  categoryName,
   onNavigate,
 }) => {
   const [products, setProducts] = useState<(Product & { imageUrls: string[] })[]>([]);
@@ -62,23 +55,22 @@ export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
   const [imageErrors, setImageErrors] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    if (!brandName) return;
+    if (!categoryName) return;
 
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/brand/${encodeURIComponent(
-            brandName
+          `http://localhost:5000/api/products/category/${encodeURIComponent(
+            categoryName
           )}`
         );
         const json = await res.json();
 
         if (res.ok) {
-          // Add image URLs to each product
           const productsWithImages = json.data.map((product: Product) => ({
             ...product,
-            imageUrls: generateImageUrls(product.title)
+            imageUrls: generateImageUrls(product.title),
           }));
           setProducts(productsWithImages);
         } else {
@@ -93,21 +85,17 @@ export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
     };
 
     fetchProducts();
-  }, [brandName]);
+  }, [categoryName]);
 
   const handleImageError = (productId: string) => {
-    setImageErrors(prev => {
-      const currentCount = prev[productId] || 0;
-      return {
-        ...prev,
-        [productId]: currentCount + 1
-      };
-    });
+    setImageErrors(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1,
+    }));
   };
 
   const getCurrentImage = (product: Product & { imageUrls: string[] }) => {
     const errorCount = imageErrors[product.id] || 0;
-    // Try the next URL if current failed
     return product.imageUrls[errorCount] || product.imageUrls[0] || "";
   };
 
@@ -128,7 +116,7 @@ export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
   if (!products.length)
     return (
       <div className="min-h-screen p-6 bg-white dark:bg-[#191919] text-black dark:text-gray-400 transition-colors">
-        No products found for {brandName}.
+        No products found for {categoryName}.
       </div>
     );
 
@@ -141,10 +129,9 @@ export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
         ← Back to Home
       </button>
 
-    <h1 className="text-3xl font-bold mb-8 text-center text-black dark:text-gray-100 transition-colors">
-  {brandName} Products
-</h1>
-
+      <h1 className="text-3xl font-bold mb-8 text-center text-black dark:text-gray-100 transition-colors">
+        {categoryName} Products
+      </h1>
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import SecondaryNavbar from './SecondaryNavbar';
-
+import TopWarningMarquee from './TopWarningMarquee';
 export const Header: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
   const { getItemCount } = useCart();
@@ -31,6 +31,7 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50">
+      <TopWarningMarquee/>
       <div
         className="relative h-20 flex items-center"
         style={{

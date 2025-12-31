@@ -6,8 +6,10 @@ interface Product {
   id: number;
   title: string;
   brand: string;
+  sku?: string;
   description?: string;
   flavors?: string[];
+  categories?: string[];
 }
 
 const possibleExtensions = ["jpg", "jpeg", "png"];
@@ -41,22 +43,16 @@ export const ProductDetailPage: React.FC = () => {
           setProduct(json.data);
           setSelectedFlavor(json.data?.flavors?.[0] || "");
 
-          // Transform title to folder name with underscores
+          // Build image folder name
           const folderName = json.data.title
-      .trim()
-    // Replace ALL spaces with _
-    .replace(/\s+/g, "_")
-    // Replace special characters ( ) & % # . with _
-    .replace(/[()&%#.+/,]/g, "_")
-    // Keep - as is, remove everything else
-   
-          // Generate image URLs
+            .trim()
+            .replace(/\s+/g, "_")
+            .replace(/[()&%#.+,!]/g, "_");
+
           const generatedImages: string[] = [];
-          for (let i = 1; i <= 5; i++) { // max 5 images
+          for (let i = 1; i <= 5; i++) {
             for (let ext of possibleExtensions) {
-              generatedImages.push(
-                `/product-images/${folderName}/${i}.${ext}`
-              );
+              generatedImages.push(`/product-images/${folderName}/${i}.${ext}`);
             }
           }
           setImages(generatedImages);
@@ -71,12 +67,17 @@ export const ProductDetailPage: React.FC = () => {
     fetchProduct();
   }, [id]);
 
-  // Try next image if current fails
   const handleImageError = (index: number) => {
-    const nextIndex = index + 1;
-    if (nextIndex < images.length) {
-      setSelectedImage(nextIndex);
+    if (index + 1 < images.length) {
+      setSelectedImage(index + 1);
     }
+  };
+
+  const handleThumbnailError = (
+    e: React.SyntheticEvent<HTMLImageElement>
+  ) => {
+    const parent = e.currentTarget.parentElement;
+    if (parent) parent.style.display = "none";
   };
 
   if (loading) return <p className="p-6">Loading product...</p>;
@@ -96,7 +97,7 @@ export const ProductDetailPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow border p-6 grid md:grid-cols-2 gap-8">
           {/* IMAGE GALLERY */}
           <div>
-            <div className="aspect-square bg-gray-100 rounded overflow-hidden mb-2">
+            <div className="aspect-square bg-gray-100 rounded overflow-hidden mb-3">
               {images[selectedImage] && (
                 <img
                   src={images[selectedImage]}
@@ -107,8 +108,8 @@ export const ProductDetailPage: React.FC = () => {
               )}
             </div>
 
-            <div className="flex gap-2">
-              {images.slice(0, 5).map((img, idx) => (
+            <div className="flex gap-2 flex-wrap">
+              {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
@@ -121,7 +122,7 @@ export const ProductDetailPage: React.FC = () => {
                   <img
                     src={img}
                     alt={`${product.title} ${idx + 1}`}
-                    onError={() => handleImageError(idx)}
+                    onError={handleThumbnailError}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -129,13 +130,18 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* INFO */}
+          {/* PRODUCT INFO */}
           <div>
-            <p className="text-sm text-blue-600 font-semibold uppercase">
+            {/* BRAND */}
+            <p className="text-sm text-blue-600 font-semibold uppercase mb-1">
               {product.brand}
             </p>
-            <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
 
+            <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
+
+           
+
+            {/* WARNING */}
             <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4 flex gap-2">
               <TriangleAlert className="text-yellow-600" />
               <p className="text-sm">
@@ -146,7 +152,34 @@ export const ProductDetailPage: React.FC = () => {
             {product.description && (
               <p className="text-gray-700 mb-4">{product.description}</p>
             )}
+             {/* SKU */}
+             <p className="text-sm text-gray-500 mb-3">
+                <strong>Brand</strong> {product.brand}
+              </p>
+          
+            {product.sku && (
+              <p className="text-sm text-gray-500 mb-3">
+                <strong>SKU:</strong> {product.sku}
+              </p>
+            )}
 
+            {/* CATEGORIES */}
+            {product.categories && product.categories.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold mb-2">Categories</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.categories.map((cat, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 text-xs bg-gray-100 border rounded-full"
+                    >
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* FLAVORS */}
             {product.flavors && product.flavors.length > 0 && (
               <div className="mb-4">
                 <h3 className="font-semibold mb-2">Select Flavor</h3>
@@ -168,15 +201,24 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             )}
 
+            {/* QUANTITY */}
             <div className="mb-6">
               <h3 className="font-semibold mb-2">Quantity</h3>
               <div className="flex items-center gap-3">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                  <Minus />
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Minus size={20} />
                 </button>
-                <span>{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)}>
-                  <Plus />
+                <span className="text-lg font-medium w-8 text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Plus size={20} />
                 </button>
               </div>
             </div>

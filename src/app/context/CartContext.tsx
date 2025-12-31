@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Product } from '../data/mockData';
 
 export interface CartItem {
-  product: Product;
+  productId: string;
+  name?: string;
   quantity: number;
   flavor?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity: number, flavor?: string) => void;
+  addToCart: (productId: string, name?: string, quantity?: number, flavor?: string) => void;
   removeFromCart: (productId: string, flavor?: string) => void;
   updateQuantity: (productId: string, quantity: number, flavor?: string) => void;
   clearCart: () => void;
@@ -34,68 +34,46 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('sootaCart', JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: Product, quantity: number, flavor?: string) => {
+  const addToCart = (productId: string, name?: string, quantity: number = 1, flavor?: string) => {
     setItems(prevItems => {
-      const existingItemIndex = prevItems.findIndex(
-        item => item.product.id === product.id && item.flavor === flavor
+      const existingIndex = prevItems.findIndex(
+        item => item.productId === productId && item.flavor === flavor
       );
 
-      if (existingItemIndex >= 0) {
-        // Update quantity of existing item
+      if (existingIndex >= 0) {
         const newItems = [...prevItems];
-        newItems[existingItemIndex].quantity += quantity;
+        newItems[existingIndex].quantity += quantity;
         return newItems;
       } else {
-        // Add new item
-        return [...prevItems, { product, quantity, flavor }];
+        return [...prevItems, { productId, name, quantity, flavor }];
       }
     });
   };
 
   const removeFromCart = (productId: string, flavor?: string) => {
-    setItems(prevItems => 
-      prevItems.filter(item => 
-        !(item.product.id === productId && item.flavor === flavor)
-      )
-    );
+    setItems(prevItems => prevItems.filter(
+      item => !(item.productId === productId && item.flavor === flavor)
+    ));
   };
 
   const updateQuantity = (productId: string, quantity: number, flavor?: string) => {
     setItems(prevItems => {
       const newItems = [...prevItems];
-      const itemIndex = newItems.findIndex(
-        item => item.product.id === productId && item.flavor === flavor
-      );
-      
-      if (itemIndex >= 0) {
-        if (quantity <= 0) {
-          newItems.splice(itemIndex, 1);
-        } else {
-          newItems[itemIndex].quantity = quantity;
-        }
+      const index = newItems.findIndex(item => item.productId === productId && item.flavor === flavor);
+      if (index >= 0) {
+        if (quantity <= 0) newItems.splice(index, 1);
+        else newItems[index].quantity = quantity;
       }
-      
       return newItems;
     });
   };
 
-  const clearCart = () => {
-    setItems([]);
-  };
+  const clearCart = () => setItems([]);
 
-  const getItemCount = () => {
-    return items.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getItemCount = () => items.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ 
-      items, 
-      addToCart, 
-      removeFromCart, 
-      updateQuantity, 
-      clearCart,
-      getItemCount 
-    }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, getItemCount }}>
       {children}
     </CartContext.Provider>
   );
@@ -103,8 +81,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
+  if (!context) throw new Error('useCart must be used within a CartProvider');
   return context;
 };

@@ -25,8 +25,9 @@ const SecondaryNavbar: React.FC = () => {
 
   return (
     <div className="relative" style={{ backgroundColor: "rgba(0,0,0,1)" }}>
-      <div className="max-w-7xl mx-auto px-6">
-        <ul className="flex gap-6 text-xs font-semibold uppercase tracking-wide text-gray-100">
+     <div className="max-w-7xl mx-auto px-6 py-1 flex justify-center">
+
+        <ul className="flex gap-6 text-md font-semibold uppercase tracking-wide text-gray-100">
           {SECONDARY_NAV_DATA.map((category, index) => (
             <li
               key={category.title}

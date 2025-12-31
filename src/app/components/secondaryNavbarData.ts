@@ -75,7 +75,7 @@ export const SECONDARY_NAV_DATA: NavCategory[] = [
   {
     title: "Smoke Shop",
     brands: [
-      "Batteries / Chargers",
+      "Batteries &  Chargers",
       "Butane Fuel",
       "Candles / Spray / Incense",
       "CCELL & iKrusher",

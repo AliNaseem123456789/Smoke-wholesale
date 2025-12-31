@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { HeroSection } from '../components/HeroSection';
+import WhyChooseUs from '../components/WhyChoseUS';
+import FourFeatureSection from '../components/FourFeatures';
+import LogoMarquee from '../components/LogoMarquee';
 interface Product {
   id: number | string;
   title: string;
@@ -18,9 +21,9 @@ const possibleExtensions = ["jpg", "jpeg", "png", "webp"];
 // Helper to get folder name
 const getFolderName = (title: string) => {
   return title
-    .trim()
-    .replace(/\s+/g, "_")
-    .replace(/[()&%#.+/,]/g, "_");
+      .trim()
+            .replace(/\s+/g, "_")
+            .replace(/[()&%#.+,!]/g, "_");
 };
 
 // Helper to generate image URLs for a product
@@ -58,9 +61,7 @@ export const HomePage: React.FC = () => {
         const res = await fetch('http://localhost:5000/api/products/home');
         const json = await res.json();
 
-        if (!res.ok) {
-          throw new Error(json.message || 'Failed to fetch products');
-        }
+        if (!res.ok) throw new Error(json.message || 'Failed to fetch products');
 
         const featuredWithImages = json.data.featured.map((product: Product) => ({
           ...product,
@@ -75,11 +76,10 @@ export const HomePage: React.FC = () => {
           imageUrls: generateImageUrls(product.title)
         }));
 
-        setFeaturedProducts(featuredWithImages);
-     setFeaturedProducts(featuredWithImages.slice(0, 5));
-setNewArrivals(newArrivalsWithImages.slice(0, 5));
-setBestSellers(bestSellersWithImages.slice(0, 5));
-
+        // Slice to enforce rows:
+        setFeaturedProducts(featuredWithImages.slice(0, 15)); // 3 rows if 5 columns
+        setNewArrivals(newArrivalsWithImages.slice(0, 10));   // 2 rows if 5 columns
+        setBestSellers(bestSellersWithImages.slice(0, 10));   // 10 items
       } catch (err) {
         console.error(err);
         setError('Network error');
@@ -110,140 +110,69 @@ setBestSellers(bestSellersWithImages.slice(0, 5));
     return product.imageUrls[errorCount] || product.imageUrls[0] || "/product-placeholder.png";
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center
-        bg-white text-black
-        dark:bg-[#191919] dark:text-white">
-        Loading...
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-white text-black dark:bg-[#191919] dark:text-white">Loading...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center bg-white text-red-600 dark:bg-[#191919] dark:text-red-400">{error}</div>;
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center
-        bg-white text-red-600
-        dark:bg-[#191919] dark:text-red-400">
-        {error}
-      </div>
-    );
-  }
-
-  const renderProducts = (products: (Product & { imageUrls: string[] })[]) => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {products.map((product) => (
-        <div
-          key={product.id}
-          onClick={() => handleProductClick(product)}
-          className="
-            bg-white dark:bg-[#11172a]
-            border border-gray-200 dark:border-white/10
-            rounded-xl overflow-hidden cursor-pointer
-            hover:border-cyan-400
-            hover:shadow-[0_0_25px_rgba(34,211,238,0.25)]
-            transition-all
-          "
-        >
-          <div className="aspect-[4/3] bg-gray-200 dark:bg-black/40 overflow-hidden">
-            <img
-              src={getCurrentImage(product)}
-              alt={product.title}
-              onError={() => handleImageError(product.id)}
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          <div className="p-4">
-            <h3 className="font-semibold truncate">{product.title}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{product.brand}</p>
-          </div>
+  const renderRows = (products: (Product & { imageUrls: string[] })[], cols = 5) => {
+    const rows = [];
+    for (let i = 0; i < products.length; i += cols) {
+      const rowItems = products.slice(i, i + cols);
+      rows.push(
+        <div key={i} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-6">
+          {rowItems.map(product => (
+            <div
+              key={product.id}
+              onClick={() => handleProductClick(product)}
+              className="bg-white dark:bg-[#11172a] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden cursor-pointer hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(34,211,238,0.25)] transition-all"
+            >
+              <div className="aspect-[4/3] bg-gray-200 dark:bg-black/40 overflow-hidden">
+                <img
+                  src={getCurrentImage(product)}
+                  alt={product.title}
+                  onError={() => handleImageError(product.id)}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold truncate">{product.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{product.brand}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
+      );
+    }
+    return rows;
+  };
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-[#191919] dark:text-white transition-colors">
-      {/* ================= HERO ================= */}
-      <section className="relative h-[85vh] flex items-center">
-        <img
-          src="/logos/hero.jpeg"
-          alt="Hero"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
-        <div className="absolute inset-0 bg-black/30" />
+     
+     <HeroSection/>
+<FourFeatureSection/>
+      {/* FEATURED */}
+      <section className="py-10 bg-gray-100 dark:bg-[#11172a] transition-colors">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-10">FEATURED <span className="text-cyan-400">PRODUCTS</span></h2>
+          {renderRows(featuredProducts)}
+        </div>
+      </section>
+      <LogoMarquee/>
 
-        <div className="relative max-w-7xl mx-auto px-6 w-full">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 text-white">
-              FUTURE OF <span className="text-cyan-400">//</span> WHOLESALE
-            </h1>
-            <p className="text-lg md:text-xl text-gray-200 mb-10">
-              Modern solutions. Rapid fulfillment. <br />
-              <span className="text-pink-400">Unbeatable wholesale pricing.</span>
-            </p>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button
-                onClick={() => navigate('/register')}
-                className="
-                  px-8 py-3 rounded-lg font-semibold
-                  bg-cyan-500 text-black dark:text-white
-                  hover:bg-cyan-400
-                  shadow-[0_0_20px_rgba(34,211,238,0.6)]
-                  transition-all
-                "
-              >
-                Register
-              </button>
-
-              <button
-                onClick={() => navigate('/login')}
-                className="
-                  px-8 py-3 rounded-lg font-semibold
-                  border border-pink-400 text-pink-400
-                  hover:bg-pink-500 hover:text-black
-                  dark:hover:text-white
-                  shadow-[0_0_20px_rgba(236,72,153,0.5)]
-                  transition-all
-                "
-              >
-                Login
-              </button>
-            </div>
-          </div>
+<WhyChooseUs/>
+      {/* NEW ARRIVALS */}
+      <section className="py-11  bg-gray-100 dark:bg-[#11172a] transition-colors">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold ">NEW <span className="text-pink-400">ARRIVALS</span></h2>
+          {renderRows(newArrivals)}
         </div>
       </section>
 
-      {/* ================= FEATURED ================= */}
-      <section className="py-20 bg-gray-100 dark:bg-[#11172a] transition-colors">
+      {/* BEST SELLERS */}
+      <section className="py-10 bg-gray-100 dark:bg-[#11172a] transition-colors">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">
-            FEATURED <span className="text-cyan-400">PRODUCTS</span>
-          </h2>
-          {renderProducts(featuredProducts)}
-        </div>
-      </section>
-
-      {/* ================= NEW ARRIVALS ================= */}
-      <section className="py-20 bg-gray-100 dark:bg-[#11172a] transition-colors">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">
-            NEW <span className="text-pink-400">ARRIVALS</span>
-          </h2>
-          {renderProducts(newArrivals)}
-        </div>
-      </section>
-
-      {/* ================= BEST SELLERS ================= */}
-      <section className="py-20 bg-gray-100 dark:bg-[#11172a] transition-colors">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">
-            BEST <span className="text-cyan-400">SELLERS</span>
-          </h2>
-          {renderProducts(bestSellers)}
+          <h2 className="text-3xl md:text-4xl font-bold mb-10">BEST <span className="text-cyan-400">SELLERS</span></h2>
+          {renderRows(bestSellers)}
         </div>
       </section>
     </div>
