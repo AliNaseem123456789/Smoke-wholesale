@@ -21,9 +21,10 @@ const possibleExtensions = ["jpg", "jpeg", "png", "webp"];
 // Helper to get folder name
 const getFolderName = (title: string) => {
   return title
-      .trim()
-            .replace(/\s+/g, "_")
-            .replace(/[()&%#.+,!]/g, "_");
+     .trim()
+              .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/[()&%#.+,!\/]/g, "_");
 };
 
 // Helper to generate image URLs for a product

@@ -45,9 +45,11 @@ export const ProductDetailPage: React.FC = () => {
 
           // Build image folder name
           const folderName = json.data.title
-            .trim()
-            .replace(/\s+/g, "_")
-            .replace(/[()&%#.+,!]/g, "_");
+              .trim()
+              .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/[()&%#.+,!\/]/g, "_");
+    
 
           const generatedImages: string[] = [];
           for (let i = 1; i <= 5; i++) {

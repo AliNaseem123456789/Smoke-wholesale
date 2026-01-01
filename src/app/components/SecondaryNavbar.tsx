@@ -60,9 +60,14 @@ const SecondaryNavbar: React.FC = () => {
             </li>
           ))}
 
-          <li className="py-3 cursor-pointer text-gray-100 hover:text-gray-300 transition-colors">
-            Nicotine Pouches
-          </li>
+          <li
+  className="py-3 cursor-pointer text-gray-100 hover:text-gray-300 transition-colors"
+  // onClick={() => navigate(`/category/${encodeURIComponent("Nicotine Pouches")}`)}
+   onClick={() => navigate(`/category/${encodeURIComponent("ALT Nicotine")}`)}
+>
+  Nicotine Pouches
+</li>
+
         </ul>
       </div>
 
