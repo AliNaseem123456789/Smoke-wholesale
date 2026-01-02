@@ -95,18 +95,33 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Contact */}
+          {/* Contact Info from your first Footer */}
           <div>
             <h4 className="text-sm font-bold tracking-wide mb-3">CONTACT US</h4>
-            <p className="text-sm mb-1">Email: support@sootasmokeshop.com</p>
-            <p className="text-sm mb-1">Phone: (800) 766-8297</p>
-            <p className="text-sm mb-2">
-              123 Wholesale Blvd<br />
-              Commerce City, CA 90001
-            </p>
-            <p className="text-sm font-semibold">
-              Hours: <span className="font-normal">Mon–Sat | 8:00 am – 7:00 pm</span>
-            </p>
+            <div className="space-y-2 text-sm">
+              <p className="text-blue-600 truncate">support@sootasmoke.com</p>
+              <p>(516) 485-4343</p>
+              <p className="leading-tight">34 Nassau Blvd, Garden City, NY 11530</p>
+              <div className="pt-1 space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-[13px] inline-block w-[65px]">Mon-Sat:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="bg-[#360542] text-white text-[10px] px-2 py-1 rounded font-mono">8:00 am</span>
+                    <span className="text-gray-400 text-xs">-</span>
+                    <span className="bg-[#360542] text-white text-[10px] px-2 py-1 rounded font-mono">9:00 pm</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-[13px] inline-block w-[65px]">Sunday:</span>
+                  <div className="flex items-center gap-1">
+                    <span className="bg-[#360542] text-white text-[10px] px-2 py-1 rounded font-mono">10:00 am</span>
+                    <span className="text-gray-400 text-xs">-</span>
+                    <span className="bg-[#360542] text-white text-[10px] px-2 py-1 rounded font-mono">8:00 pm</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>

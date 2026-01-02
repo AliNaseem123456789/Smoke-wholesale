@@ -17,24 +17,30 @@ const FourFeatureSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-10 bg-gray-100">
+    // Removed bg-gray-100 to make the background clean white
+    <section className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-6">
-        {/* 2x2 IMAGE GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {features.map((item, index) => (
             <div
               key={index}
               onClick={() => navigate(item.link)}
-              className="group relative h-56 md:h-64 overflow-hidden border border-gray-200 cursor-pointer transition-all hover:border-cyan-500 hover:shadow-[0_12px_45px_rgba(0,0,0,0.18)]"
+              /* aspect-[2/1] ensures all cards are the same wide rectangular shape.
+                overflow-hidden ensures nothing spills out.
+              */
+              className="group relative aspect-[2/1] w-full overflow-hidden border border-gray-200 cursor-pointer transition-all hover:border-cyan-500 hover:shadow-xl"
             >
               <img
                 src={item.image}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                /* w-full h-full + object-fill: Forces the image to fit the box exactly.
+                  If you prefer not to stretch the image, use object-cover.
+                */
+                className="absolute inset-0 w-full h-full object-fill transition-transform duration-500 group-hover:scale-105"
               />
 
-              {/* Optional dark overlay on hover (remove if not needed) */}
-              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              {/* Light overlay on hover */}
+              <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
           ))}
         </div>

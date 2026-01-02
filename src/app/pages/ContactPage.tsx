@@ -117,7 +117,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                   <Mail className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Email</div>
-                    <div className="text-gray-600">wholesale@sootasmokeshop.com</div>
+                    <div className="text-gray-600">support@sootasmoke.com</div>
                   </div>
                 </div>
 
@@ -125,8 +125,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                   <Phone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Phone</div>
-                    <div className="text-gray-600">1-800-SOOTA-WS</div>
-                    <div className="text-gray-600">(1-800-766-8297)</div>
+                    <div className="text-gray-600">(516) 485-4343</div>
                   </div>
                 </div>
 
@@ -135,8 +134,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Address</div>
                     <div className="text-gray-600">
-                      123 Wholesale Blvd<br />
-                      Commerce City, CA 90001
+                      34 Nassau Blvd<br />
+                      Garden City, NY 11530
                     </div>
                   </div>
                 </div>
@@ -146,9 +145,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                   <div>
                     <div className="font-semibold text-gray-900 mb-1">Business Hours</div>
                     <div className="text-gray-600">
-                      Monday - Friday: 8:00 AM - 6:00 PM PST<br />
-                      Saturday: 9:00 AM - 4:00 PM PST<br />
-                      Sunday: Closed
+                      Monday - Saturday: 8:00 AM - 9:00 PM<br />
+                      Sunday: 10:00 AM - 8:00 PM
                     </div>
                   </div>
                 </div>

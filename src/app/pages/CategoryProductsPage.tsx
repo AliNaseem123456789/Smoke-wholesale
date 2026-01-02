@@ -61,7 +61,7 @@ export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/category/${encodeURIComponent(categoryName)}`
+          `https://smoke-wholesale-backend.onrender.com/api/products/category/${encodeURIComponent(categoryName)}`
         );
         const json = await res.json();
 

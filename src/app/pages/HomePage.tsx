@@ -126,7 +126,7 @@ export const HomePage: React.FC = () => {
     const fetchHomeData = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:5000/api/products/home');
+        const res = await fetch('https://smoke-wholesale-backend.onrender.com/api/products/home');
         const json = await res.json();
         const mapWithImages = (items: any[]) => items.map(p => ({ ...p, imageUrls: generateImageUrls(p.title) }));
         const featured = mapWithImages(json.data.featured).slice(0, 15);

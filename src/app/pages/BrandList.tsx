@@ -18,7 +18,7 @@ export const BrandList: React.FC = () => {
       setError(null);
 
       try {
-        const res = await fetch("http://localhost:5000/api/products/display");
+        const res = await fetch("https://smoke-wholesale-backend.onrender.com/api/products/display");
         const json = await res.json();
 
         if (!res.ok) {

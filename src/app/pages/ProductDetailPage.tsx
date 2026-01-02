@@ -33,7 +33,7 @@ export const ProductDetailPage: React.FC = () => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/product/${id}`
+          `https://smoke-wholesale-backend.onrender.com/api/products/product/${id}`
         );
         const json = await res.json();
 

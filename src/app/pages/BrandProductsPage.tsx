@@ -46,11 +46,6 @@ const generateImageUrls = (title: string): string[] => {
 
   return urls;
 };
-
-/* -------------------------------------------
-   Component
-------------------------------------------- */
-
 export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
   brandName,
   onNavigate,
@@ -73,7 +68,7 @@ export const BrandProductsPage: React.FC<BrandProductsPageProps> = ({
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/brand/${encodeURIComponent(
+          `https://smoke-wholesale-backend.onrender.com/api/products/brand/${encodeURIComponent(
             brandName
           )}`
         );
