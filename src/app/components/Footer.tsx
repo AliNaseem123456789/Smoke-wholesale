@@ -1,10 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom"; // ✅ React Router Link
 
-interface FooterProps {
-  onNavigate?: (page: string) => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC = () => {
   return (
     <footer className="w-full">
 
@@ -63,19 +60,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 className="text-sm font-bold tracking-wide mb-3">NAVIGATION</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <button onClick={() => onNavigate?.("home")} className="hover:underline">Homepage</button>
+                <Link to="/" className="hover:underline">Homepage</Link>
               </li>
               <li>
-                <button onClick={() => onNavigate?.("brands")} className="hover:underline">Shop by Brands</button>
+                <Link to="/brand" className="hover:underline">Shop by Brands</Link>
               </li>
               <li>
-                <button onClick={() => onNavigate?.("account")} className="hover:underline">My Account</button>
+                <Link to="/account" className="hover:underline">My Account</Link>
               </li>
               <li>
-                <button onClick={() => onNavigate?.("faq")} className="hover:underline">FAQ</button>
+                <Link to="/faq" className="hover:underline">FAQ</Link>
               </li>
               <li>
-                <button onClick={() => onNavigate?.("contact")} className="hover:underline">Contact Us</button>
+                <Link to="/contact" className="hover:underline">Contact Us</Link>
               </li>
             </ul>
           </div>

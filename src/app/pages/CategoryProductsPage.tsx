@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 interface Product {
-  id: string;
+  id: string | number;
   title: string;
   brand: string;
   description?: string;
@@ -17,27 +17,25 @@ interface CategoryProductsPageProps {
   onNavigate: (path: string) => void;
 }
 
-const possibleExtensions = ["jpg", "jpeg", "png", "webp"];
+const POSSIBLE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
+const MAX_IMAGES = 5;
+const PLACEHOLDER_IMAGE = "/product-placeholder.png";
 
-// Helper to get folder name
-const getFolderName = (title: string) => {
-  return title
+// Normalize folder name
+const getFolderName = (title: string) =>
+  title
     .trim()
+    .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
     .replace(/\s+/g, "_")
-    .replace(/[()&%#.+,]/g, "_");
-};
+    .replace(/[()&%#.+,!\/]/g, "_");
 
 // Generate image URLs
 const generateImageUrls = (productTitle: string): string[] => {
   const folderName = getFolderName(productTitle);
   const urls: string[] = [];
 
-  for (let ext of possibleExtensions) {
-    urls.push(`/product-images/${folderName}/1.${ext}`);
-  }
-
-  for (let i = 2; i <= 5; i++) {
-    for (let ext of possibleExtensions) {
+  for (let i = 1; i <= MAX_IMAGES; i++) {
+    for (const ext of POSSIBLE_EXTENSIONS) {
       urls.push(`/product-images/${folderName}/${i}.${ext}`);
     }
   }
@@ -52,30 +50,36 @@ export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
   const [products, setProducts] = useState<(Product & { imageUrls: string[] })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imageErrors, setImageErrors] = useState<Record<string, number>>({});
+  const [imageIndices, setImageIndices] = useState<Record<string, number>>({});
 
   useEffect(() => {
     if (!categoryName) return;
 
     const fetchProducts = async () => {
       setLoading(true);
+      setError(null);
+
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/category/${encodeURIComponent(
-            categoryName
-          )}`
+          `http://localhost:5000/api/products/category/${encodeURIComponent(categoryName)}`
         );
         const json = await res.json();
 
-        if (res.ok) {
-          const productsWithImages = json.data.map((product: Product) => ({
-            ...product,
-            imageUrls: generateImageUrls(product.title),
-          }));
-          setProducts(productsWithImages);
-        } else {
-          setError(json.message || "Error fetching products");
-        }
+        if (!res.ok) throw new Error(json.message || "Failed to fetch products");
+
+        const productsWithImages = json.data.map((p: Product) => ({
+          ...p,
+          imageUrls: generateImageUrls(p.title),
+        }));
+
+        setProducts(productsWithImages);
+
+        // Initialize image index = 0 for each product
+        const initialIndices: Record<string, number> = {};
+        productsWithImages.forEach((p) => {
+          initialIndices[String(p.id)] = 0;
+        });
+        setImageIndices(initialIndices);
       } catch (err) {
         console.error(err);
         setError("Network error");
@@ -87,16 +91,27 @@ export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
     fetchProducts();
   }, [categoryName]);
 
-  const handleImageError = (productId: string) => {
-    setImageErrors(prev => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1,
-    }));
+  // Image fallback logic
+  const handleImageError = (productIdRaw: string | number) => {
+    const productId = String(productIdRaw);
+
+    setImageIndices((prev) => {
+      const product = products.find((p) => String(p.id) === productId);
+      if (!product) return prev;
+
+      const maxIndex = product.imageUrls.length - 1;
+      const nextIndex = Math.min((prev[productId] ?? 0) + 1, maxIndex);
+
+      return {
+        ...prev,
+        [productId]: nextIndex,
+      };
+    });
   };
 
   const getCurrentImage = (product: Product & { imageUrls: string[] }) => {
-    const errorCount = imageErrors[product.id] || 0;
-    return product.imageUrls[errorCount] || product.imageUrls[0] || "";
+    const index = imageIndices[String(product.id)] ?? 0;
+    return product.imageUrls[index] ?? PLACEHOLDER_IMAGE;
   };
 
   if (loading)
@@ -148,6 +163,7 @@ export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
                 <img
                   src={getCurrentImage(product)}
                   alt={product.title}
+                  loading="lazy"
                   onError={() => handleImageError(product.id)}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />

@@ -13,7 +13,7 @@ import TopWarningMarquee from './components/TopWarningMarquee';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Toaster } from './components/ui/sonner';
-
+import { ScrollToTop } from './components/ScrollTOTOp';
 // Pages
 import { HomePage } from './pages/HomePage';
 import { BrandProductsPage } from './pages/BrandProductsPage';
@@ -57,16 +57,13 @@ const CategoryProductsPageWrapper = () => {
   );
 };
 
-
-
 /* -------------------- APP -------------------- */
-
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          
+           <ScrollToTop />
           <Header />
 
           <main className="flex-1">

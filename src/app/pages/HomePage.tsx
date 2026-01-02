@@ -4,6 +4,7 @@ import { HeroSection } from '../components/HeroSection';
 import WhyChooseUs from '../components/WhyChoseUS';
 import FourFeatureSection from '../components/FourFeatures';
 import LogoMarquee from '../components/LogoMarquee';
+
 interface Product {
   id: number | string;
   title: string;
@@ -16,32 +17,27 @@ interface Product {
   created_at?: string;
 }
 
-const possibleExtensions = ["jpg", "jpeg", "png", "webp"];
+const POSSIBLE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
+const MAX_IMAGES = 5;
+const PLACEHOLDER_IMAGE = "/product-placeholder.png";
 
-// Helper to get folder name
-const getFolderName = (title: string) => {
-  return title
-     .trim()
-              .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
+// Normalize folder name
+const getFolderName = (title: string) =>
+  title
+    .trim()
+    .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
     .replace(/\s+/g, "_")
     .replace(/[()&%#.+,!\/]/g, "_");
-};
 
-// Helper to generate image URLs for a product
+// Generate image URLs
 const generateImageUrls = (productTitle: string): string[] => {
   const folderName = getFolderName(productTitle);
   const urls: string[] = [];
-  
-  for (let ext of possibleExtensions) {
-    urls.push(`/product-images/${folderName}/1.${ext}`);
-  }
-  
-  for (let i = 2; i <= 5; i++) {
-    for (let ext of possibleExtensions) {
+  for (let i = 1; i <= MAX_IMAGES; i++) {
+    for (const ext of POSSIBLE_EXTENSIONS) {
       urls.push(`/product-images/${folderName}/${i}.${ext}`);
     }
   }
-  
   return urls;
 };
 
@@ -53,34 +49,37 @@ export const HomePage: React.FC = () => {
   const [bestSellers, setBestSellers] = useState<(Product & { imageUrls: string[] })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imageErrors, setImageErrors] = useState<Record<string, number>>({});
+  const [imageIndices, setImageIndices] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchHomeData = async () => {
       setLoading(true);
+      setError(null);
+
       try {
         const res = await fetch('http://localhost:5000/api/products/home');
         const json = await res.json();
 
         if (!res.ok) throw new Error(json.message || 'Failed to fetch products');
 
-        const featuredWithImages = json.data.featured.map((product: Product) => ({
-          ...product,
-          imageUrls: generateImageUrls(product.title)
-        }));
-        const newArrivalsWithImages = json.data.newArrivals.map((product: Product) => ({
-          ...product,
-          imageUrls: generateImageUrls(product.title)
-        }));
-        const bestSellersWithImages = json.data.bestSellers.map((product: Product) => ({
-          ...product,
-          imageUrls: generateImageUrls(product.title)
-        }));
+        const addImages = (arr: Product[]) =>
+          arr.map((p) => ({ ...p, imageUrls: generateImageUrls(p.title) }));
 
-        // Slice to enforce rows:
-        setFeaturedProducts(featuredWithImages.slice(0, 15)); // 3 rows if 5 columns
-        setNewArrivals(newArrivalsWithImages.slice(0, 10));   // 2 rows if 5 columns
-        setBestSellers(bestSellersWithImages.slice(0, 10));   // 10 items
+        const featuredWithImages = addImages(json.data.featured).slice(0, 15);
+        const newArrivalsWithImages = addImages(json.data.newArrivals).slice(0, 10);
+        const bestSellersWithImages = addImages(json.data.bestSellers).slice(0, 10);
+
+        setFeaturedProducts(featuredWithImages);
+        setNewArrivals(newArrivalsWithImages);
+        setBestSellers(bestSellersWithImages);
+
+        // Initialize image index for each product as STRING key
+        const initialIndices: Record<string, number> = {};
+        [...featuredWithImages, ...newArrivalsWithImages, ...bestSellersWithImages].forEach(
+          (p) => (initialIndices[p.id.toString()] = 0)
+        );
+        setImageIndices(initialIndices);
+
       } catch (err) {
         console.error(err);
         setError('Network error');
@@ -96,23 +95,41 @@ export const HomePage: React.FC = () => {
     navigate(`/product/${product.id}`);
   };
 
+  // Image fallback logic
   const handleImageError = (productId: string | number) => {
-    setImageErrors(prev => {
-      const currentCount = prev[productId] || 0;
+    setImageIndices((prev) => {
+      const allProducts = [...featuredProducts, ...newArrivals, ...bestSellers];
+      const product = allProducts.find((p) => p.id.toString() === productId.toString());
+      if (!product) return prev;
+
+      const maxIndex = product.imageUrls.length - 1;
+      const nextIndex = Math.min((prev[productId.toString()] ?? 0) + 1, maxIndex);
+
       return {
         ...prev,
-        [productId]: currentCount + 1
+        [productId.toString()]: nextIndex,
       };
     });
   };
 
   const getCurrentImage = (product: Product & { imageUrls: string[] }) => {
-    const errorCount = imageErrors[product.id] || 0;
-    return product.imageUrls[errorCount] || product.imageUrls[0] || "/product-placeholder.png";
+    const index = imageIndices[product.id.toString()] ?? 0;
+    return product.imageUrls[index] ?? PLACEHOLDER_IMAGE;
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-white text-black dark:bg-[#191919] dark:text-white">Loading...</div>;
-  if (error) return <div className="min-h-screen flex items-center justify-center bg-white text-red-600 dark:bg-[#191919] dark:text-red-400">{error}</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-black dark:bg-[#191919] dark:text-white">
+        Loading...
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-red-600 dark:bg-[#191919] dark:text-red-400">
+        {error}
+      </div>
+    );
 
   const renderRows = (products: (Product & { imageUrls: string[] })[], cols = 5) => {
     const rows = [];
@@ -120,7 +137,7 @@ export const HomePage: React.FC = () => {
       const rowItems = products.slice(i, i + cols);
       rows.push(
         <div key={i} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-6">
-          {rowItems.map(product => (
+          {rowItems.map((product) => (
             <div
               key={product.id}
               onClick={() => handleProductClick(product)}
@@ -132,6 +149,7 @@ export const HomePage: React.FC = () => {
                   alt={product.title}
                   onError={() => handleImageError(product.id)}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="p-4">
@@ -148,23 +166,28 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-[#191919] dark:text-white transition-colors">
-     
-     <HeroSection/>
-<FourFeatureSection/>
+      <HeroSection />
+      <FourFeatureSection />
+
       {/* FEATURED */}
       <section className="py-10 bg-gray-100 dark:bg-[#11172a] transition-colors">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">FEATURED <span className="text-cyan-400">PRODUCTS</span></h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-10">
+            FEATURED <span className="text-cyan-400">PRODUCTS</span>
+          </h2>
           {renderRows(featuredProducts)}
         </div>
       </section>
-      <LogoMarquee/>
 
-<WhyChooseUs/>
+      <LogoMarquee />
+      <WhyChooseUs />
+
       {/* NEW ARRIVALS */}
-      <section className="py-11  bg-gray-100 dark:bg-[#11172a] transition-colors">
+      <section className="py-11 bg-gray-100 dark:bg-[#11172a] transition-colors">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold ">NEW <span className="text-pink-400">ARRIVALS</span></h2>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            NEW <span className="text-pink-400">ARRIVALS</span>
+          </h2>
           {renderRows(newArrivals)}
         </div>
       </section>
@@ -172,12 +195,12 @@ export const HomePage: React.FC = () => {
       {/* BEST SELLERS */}
       <section className="py-10 bg-gray-100 dark:bg-[#11172a] transition-colors">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">BEST <span className="text-cyan-400">SELLERS</span></h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-10">
+            BEST <span className="text-cyan-400">SELLERS</span>
+          </h2>
           {renderRows(bestSellers)}
         </div>
       </section>
     </div>
   );
 };
-{/*new branch checking */}
-
