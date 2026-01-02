@@ -40,64 +40,58 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* ⚪ Main Footer */}
-      <div className="bg-white dark:bg-gray-900 px-6 py-14 text-gray-900 dark:text-gray-100">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-
-          {/* About / Company */}
-          <div>
-            <h4 className="text-sm font-bold tracking-wide mb-2 text-[#361A49] dark:text-[#bdb1e5]">
-              SOOTA SMOKE SHOP
-            </h4>
-            <p className="text-sm font-semibold mb-2">Exceeding The Expectations</p>
-            <p className="text-sm leading-relaxed mb-3">
-              We are an authorized wholesale smoke shop distributor offering a wide range of premium products across the United States.
+      {/* ⚪ Main Footer Section */}
+      <div className="bg-[#f8f8f8] px-6 py-8 text-[#333]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-6">
+          
+          {/* Column 1: Brand */}
+          <div className="space-y-2">
+            <div>
+              <h3 className="text-xl font-black tracking-tighter uppercase">SOOTA SMOKE</h3>
+              <p className="text-xs font-bold uppercase">Exceeding The Expectations</p>
+            </div>
+            <p className="text-sm leading-snug text-gray-700 max-w-xs">
+              We are an authorized wholesale vape distributor of thousands of e-liquids and vaping devices based in New York.
             </p>
+            <div className="pt-1">
+              <div className="border border-yellow-400 rounded-md p-1 px-2 inline-flex items-center gap-2 bg-white scale-90 origin-left">
+                 <span className="text-blue-900 font-bold text-[9px] uppercase italic leading-none">Secured by <br/><span className="text-sm normal-case">positiveSSL</span></span>
+              </div>
+            </div>
           </div>
 
-          {/* Navigation */}
+          {/* Column 2: Navigation */}
           <div>
-            <h4 className="text-sm font-bold tracking-wide mb-3">NAVIGATION</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/" className="hover:underline">Homepage</Link>
-              </li>
-              <li>
-                <Link to="/brand" className="hover:underline">Shop by Brands</Link>
-              </li>
-              <li>
-                <Link to="/account" className="hover:underline">My Account</Link>
-              </li>
-              <li>
-                <Link to="/faq" className="hover:underline">FAQ</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:underline">Contact Us</Link>
-              </li>
+            <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">Navigation</h4>
+            <ul className="text-sm space-y-1">
+              <li><Link to="/" className="hover:text-gray-500">Homepage</Link></li>
+              <li><Link to="/trending" className="hover:text-gray-500">Trending Products</Link></li>
+              <li><Link to="/account" className="hover:text-gray-500">My Account</Link></li>
+              <li><Link to="/brands" className="hover:text-gray-500">Shop by Brands</Link></li>
+              <li><Link to="/faq" className="hover:text-gray-500">FAQ</Link></li>
+              <li><Link to="/contact" className="hover:text-gray-500">Contact Us</Link></li>
             </ul>
           </div>
 
-          {/* Stay Connected */}
+          {/* Column 3: Stay Connected */}
           <div>
-            <h4 className="text-sm font-bold tracking-wide mb-3">STAY CONNECTED</h4>
-            <p className="text-sm mb-3">
-              Sign up for our mailing list for exclusive discounts, sales & news!
-            </p>
-            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">Stay Connected</h4>
+            <p className="text-sm mb-3">Exclusive discounts, sales & news!</p>
+            <div className="space-y-2">
               <input
                 type="email"
                 placeholder="Email Address"
-                className="flex-1 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 outline-none bg-transparent"
+                className="w-full border border-gray-300 p-2 text-sm bg-white focus:outline-none"
               />
-              <button className="px-4 py-2 text-sm bg-[#361A49] text-white hover:bg-[#2a1434]">
+              <button className="w-full bg-[#360542] text-white py-2 text-sm font-bold hover:bg-black transition-colors">
                 Subscribe
               </button>
             </div>
           </div>
 
-          {/* Contact Info from your first Footer */}
+          {/* Column 4: Contact Us */}
           <div>
-            <h4 className="text-sm font-bold tracking-wide mb-3">CONTACT US</h4>
+            <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">Contact Us</h4>
             <div className="space-y-2 text-sm">
               <p className="text-blue-600 truncate">support@sootasmoke.com</p>
               <p>(516) 485-4343</p>
@@ -111,7 +105,6 @@ export const Footer: React.FC = () => {
                     <span className="bg-[#360542] text-white text-[10px] px-2 py-1 rounded font-mono">9:00 pm</span>
                   </div>
                 </div>
-                
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-[13px] inline-block w-[65px]">Sunday:</span>
                   <div className="flex items-center gap-1">
@@ -127,9 +120,18 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
+      {/* 🔞 Warning Disclaimer */}
+      <div className="bg-white px-6 py-4 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto text-[11px] leading-tight text-gray-600 italic">
+          <p>
+            <span className="font-bold uppercase not-italic">Warning:</span> "This product contains nicotine which is a highly addictive substance. It is intended for use by existing smokers and vapors above legal age only. NOT FOR SALE TO MINORS. Do not use this product to treat any medical condition or habit. Stop use if you show any sensitivity. Please keep products out of reach of children. Use at your own risk."
+          </p>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
-      <div className="border-t border-gray-300 dark:border-gray-700 mt-8 py-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        © {new Date().getFullYear()} Soota Smoke Shop. All rights reserved.
+      <div className="bg-[#f8f8f8] border-t border-gray-200 py-3 px-6 text-center text-xs text-gray-500">
+        © 2026 Soota Smoke Shop. All rights reserved.
       </div>
     </footer>
   );
