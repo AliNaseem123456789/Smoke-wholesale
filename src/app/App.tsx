@@ -9,7 +9,6 @@ import {
 import { Breadcrumbs } from './components/Breadcrumbs'; // <-- new
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import TopWarningMarquee from './components/TopWarningMarquee';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Toaster } from './components/ui/sonner';
@@ -24,7 +23,7 @@ import { RegistrationPage } from './pages/RegistrationPage';
 import { CartPage } from './pages/CartPage';
 import { ContactPage } from './pages/ContactPage';
 import { BrandList } from './pages/Brandlist';
-
+import FAQ from './components/FAQ';
 /* -------------------- WRAPPERS -------------------- */
 
 // Brand products wrapper
@@ -95,6 +94,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
              
               <Route path="/brand" element={<BrandList />} />
+              <Route path="/FAQ" element={<FAQ/>}/>
             </Routes>
           </main>
 
