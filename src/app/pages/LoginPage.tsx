@@ -112,8 +112,6 @@ export const LoginPage: React.FC = () => {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
-
-          {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Don't have a wholesale account?{' '}
@@ -126,8 +124,6 @@ export const LoginPage: React.FC = () => {
             </p>
           </div>
         </div>
-
-        {/* Back to Home */}
         <div className="text-center mt-6">
           <button
             onClick={() => navigate('/')}

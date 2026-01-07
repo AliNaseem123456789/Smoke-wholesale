@@ -6,24 +6,26 @@ import {
   useNavigate,
   useParams,
 } from 'react-router-dom';
-import { Breadcrumbs } from './components/Breadcrumbs'; // <-- new
+import { Breadcrumbs } from './components/layout/Breadcrumbs'; // <-- new
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
+import { Header } from './components/layout/Header';
+import { Footer } from './components/layout/Footer';
 import { Toaster } from './components/ui/sonner';
-import { ScrollToTop } from './components/ScrollTOTOp';
+import { ScrollToTop } from './components/layout/ScrollToTop';
 // Pages
 import { HomePage } from './pages/HomePage';
-import { BrandProductsPage } from './pages/BrandProductsPage';
-import { CategoryProductsPage } from './pages/CategoryProductsPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
+import { BrandProductsPage } from '../features/products/pages/BrandProductsPage';
+import { CategoryProductsPage } from '../features/products/pages/CategoryProductsPage';
+import { ProductDetailPage } from '../features/products/pages/ProductDetailPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { CartPage } from './pages/CartPage';
 import { ContactPage } from './pages/ContactPage';
-import { BrandList } from './pages/Brandlist';
-import FAQ from './components/FAQ';
+import { BrandList } from '../features/products/pages/BrandList';
+import FAQ from './pages/FAQ';
+import Login from './pages/Login';
+import Register from './pages/register';
 /* -------------------- WRAPPERS -------------------- */
 
 // Brand products wrapper
@@ -41,7 +43,7 @@ const BrandProductsPageWrapper = () => {
   );
 };
 
-// Category products wrapper ✅
+// Category products wrapper 
 const CategoryProductsPageWrapper = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ const CategoryProductsPageWrapper = () => {
   );
 };
 
-/* -------------------- APP -------------------- */
+//APP 
 function App() {
   return (
     <AuthProvider>
@@ -70,26 +72,19 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
 
-              {/* Brand */}
+
               <Route
                 path="/brand/:brandName"
                 element={<BrandProductsPageWrapper />}
               />
-
-              {/* Category ✅ */}
               <Route
                 path="/category/:categoryName"
                 element={<CategoryProductsPageWrapper />}
-              />
-
-              
+              />              
               <Route path="/product/:id" element={<ProductDetailPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-              {/* Auth */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegistrationPage />} />
-
-              {/* Other pages */}
               <Route path="/cart" element={<CartPage />} />
               <Route path="/contact" element={<ContactPage />} />
              
