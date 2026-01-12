@@ -10,7 +10,7 @@ import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "../features/auth/pages/LoginPage";
 import { RegistrationPage } from "../features/auth/pages/RegistrationPage";
-import { CartPage } from "./pages/CartPage";
+import { CartPage } from "../features/cart/pages/CartPage";
 import { ContactPage } from "./pages/ContactPage";
 import FAQ from "./pages/FAQ";
 

@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../app/store";
-import { useAuth } from "../../features/auth/context/AuthContext";
-import {
-  removeItemFromCart,
-  addItemToCart,
-  clearCart,
-} from "../../features/cart/cartSlice";
+import { RootState, AppDispatch } from "../../../app/store";
+import { useAuth } from "../../auth/context/AuthContext";
+import { removeItemFromCart, addItemToCart, clearCart } from "../cartSlice";
 import {
   Trash2,
   Plus,
