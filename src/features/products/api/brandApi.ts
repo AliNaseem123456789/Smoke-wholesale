@@ -1,9 +1,8 @@
 import { Brand } from "../types/brand.types";
-
-const BASE_URL = "http://localhost:5000/api";
+import { API_URL } from "../../../config/config";
 
 export async function getBrands(): Promise<Brand[]> {
-  const res = await fetch(`${BASE_URL}/products/display`);
+  const res = await fetch(`${API_URL}/products/display`);
 
   if (!res.ok) {
     const json = await res.json().catch(() => ({}));

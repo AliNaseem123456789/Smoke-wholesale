@@ -1,34 +1,27 @@
-import React from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
-import { Breadcrumbs } from './components/layout/Breadcrumbs'; // <-- new
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import { Header } from './components/layout/Header';
-import { Footer } from './components/layout/Footer';
-import { Toaster } from './components/ui/sonner';
-import { ScrollToTop } from './components/layout/ScrollToTop';
+import React from "react";
+import { Routes, Route, useNavigate, useParams } from "react-router-dom";
+
+import { Header } from "./components/layout/Header";
+import { Footer } from "./components/layout/Footer";
+import { Toaster } from "./components/ui/sonner";
+import { ScrollToTop } from "./components/layout/ScrollToTop";
+
 // Pages
-import { HomePage } from './pages/HomePage';
-import { BrandProductsPage } from '../features/products/pages/BrandProductsPage';
-import { CategoryProductsPage } from '../features/products/pages/CategoryProductsPage';
-import { ProductDetailPage } from '../features/products/pages/ProductDetailPage';
-import { LoginPage } from './pages/LoginPage';
-import { RegistrationPage } from './pages/RegistrationPage';
-import { CartPage } from './pages/CartPage';
-import { ContactPage } from './pages/ContactPage';
-import { BrandList } from '../features/products/pages/BrandList';
-import FAQ from './pages/FAQ';
-import Login from './pages/Login';
-import Register from './pages/register';
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "../features/auth/pages/LoginPage";
+import { RegistrationPage } from "../features/auth/pages/RegistrationPage";
+import { CartPage } from "./pages/CartPage";
+import { ContactPage } from "./pages/ContactPage";
+import FAQ from "./pages/FAQ";
+
+import { BrandProductsPage } from "../features/products/pages/BrandProductsPage";
+import { CategoryProductsPage } from "../features/products/pages/CategoryProductsPage";
+import { ProductDetailPage } from "../features/products/pages/ProductDetailPage";
+import { BrandList } from "../features/products/pages/BrandList";
+
+import Testcart from "../features/products/pages/testCart";
 /* -------------------- WRAPPERS -------------------- */
 
-// Brand products wrapper
 const BrandProductsPageWrapper = () => {
   const { brandName } = useParams();
   const navigate = useNavigate();
@@ -43,7 +36,6 @@ const BrandProductsPageWrapper = () => {
   );
 };
 
-// Category products wrapper 
 const CategoryProductsPageWrapper = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
@@ -58,46 +50,44 @@ const CategoryProductsPageWrapper = () => {
   );
 };
 
-//APP 
+/* -------------------- APP -------------------- */
+
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-           <ScrollToTop />
-          <Header />
+    <>
+      <ScrollToTop />
+      <Header />
 
-          <main className="flex-1">
-            {/* <Breadcrumbs /> Add breadcrumb here */}
-            <Routes>
-              <Route path="/" element={<HomePage />} />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
 
+          <Route
+            path="/brand/:brandName"
+            element={<BrandProductsPageWrapper />}
+          />
+          <Route
+            path="/category/:categoryName"
+            element={<CategoryProductsPageWrapper />}
+          />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
 
-              <Route
-                path="/brand/:brandName"
-                element={<BrandProductsPageWrapper />}
-              />
-              <Route
-                path="/category/:categoryName"
-                element={<CategoryProductsPageWrapper />}
-              />              
-              <Route path="/product/:id" element={<ProductDetailPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
 
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-             
-              <Route path="/brand" element={<BrandList />} />
-              <Route path="/FAQ" element={<FAQ/>}/>
-            </Routes>
-          </main>
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
-          <Footer />
-          <Toaster position="top-center" richColors />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+          <Route path="/brand" element={<BrandList />} />
+          <Route path="/FAQ" element={<FAQ />} />
+
+          <Route path="testcart" element={<Testcart />} />
+        </Routes>
+      </main>
+
+      <Footer />
+      <Toaster position="top-center" richColors />
+    </>
   );
 }
 

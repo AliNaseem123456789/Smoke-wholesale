@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { TriangleAlert, Plus, Minus } from "lucide-react";
 import { useProductDetail } from "../hooks/useProductDetails";
 import { Product } from "../types/product.types";
-
+import { AddToCartButton } from "../components/AddToCartButton";
 const POSSIBLE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
 const MAX_IMAGES = 5;
 const PLACEHOLDER_IMAGE = "/product-placeholder.png";
@@ -52,13 +52,24 @@ export const ProductDetailPage: React.FC = () => {
     const parent = e.currentTarget.parentElement;
     if (parent) parent.style.display = "none";
   };
-  if (loading) return <div className="p-6 min-h-screen flex items-center justify-center">Loading product...</div>;
-  if (error) return <div className="p-6 min-h-screen text-red-600">{error}</div>;
+  if (loading)
+    return (
+      <div className="p-6 min-h-screen flex items-center justify-center">
+        Loading product...
+      </div>
+    );
+  if (error)
+    return <div className="p-6 min-h-screen text-red-600">{error}</div>;
   if (!product) return null;
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
-        <button onClick={() => navigate(-1)} className="text-blue-600 mb-6 hover:underline">← Back</button>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-blue-600 mb-6 hover:underline"
+        >
+          ← Back
+        </button>
 
         <div className="bg-white rounded-lg shadow border p-6 grid md:grid-cols-2 gap-8">
           {/* IMAGE GALLERY */}
@@ -90,20 +101,35 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
           <div>
-            <p className="text-sm text-blue-600 font-semibold uppercase mb-1">{product.brand}</p>
+            <p className="text-sm text-blue-600 font-semibold uppercase mb-1">
+              {product.brand}
+            </p>
             <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
             <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4 flex gap-2">
               <TriangleAlert className="text-yellow-600" />
-              <p className="text-sm"><strong>Warning:</strong> This product contains nicotine.</p>
+              <p className="text-sm">
+                <strong>Warning:</strong> This product contains nicotine.
+              </p>
             </div>
-            {product.description && <p className="text-gray-700 mb-4">{product.description}</p>}
-            {product.sku && <p className="text-sm text-gray-500 mb-3"><strong>SKU:</strong> {product.sku}</p>}
+            {product.description && (
+              <p className="text-gray-700 mb-4">{product.description}</p>
+            )}
+            {product.sku && (
+              <p className="text-sm text-gray-500 mb-3">
+                <strong>SKU:</strong> {product.sku}
+              </p>
+            )}
             {product.categories?.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-sm font-semibold mb-2">Categories</h3>
                 <div className="flex flex-wrap gap-2">
                   {product.categories.map((cat, idx) => (
-                    <span key={idx} className="px-3 py-1 text-xs bg-gray-100 border rounded-full">{cat}</span>
+                    <span
+                      key={idx}
+                      className="px-3 py-1 text-xs bg-gray-100 border rounded-full"
+                    >
+                      {cat}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -128,15 +154,50 @@ export const ProductDetailPage: React.FC = () => {
             <div className="mb-6">
               <h3 className="font-semibold mb-2">Quantity</h3>
               <div className="flex items-center gap-3">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-1 border rounded hover:bg-gray-100"><Minus size={20} /></button>
-                <span className="text-lg font-medium w-8 text-center">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-1 border rounded hover:bg-gray-100"><Plus size={20} /></button>
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Minus size={20} />
+                </button>
+                <span className="text-lg font-medium w-8 text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Plus size={20} />
+                </button>
               </div>
             </div>
 
-            <button className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-700">
-              Request Quote
-            </button>
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2">Quantity</h3>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Minus size={20} />
+                </button>
+                <span className="text-lg font-medium w-8 text-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-1 border rounded hover:bg-gray-100"
+                >
+                  <Plus size={20} />
+                </button>
+              </div>
+            </div>
+
+            {/* REPLACE STATIC BUTTON WITH REDUX BUTTON */}
+            <AddToCartButton
+              productId={Number(product.id)}
+              quantity={quantity}
+            />
           </div>
         </div>
       </div>
