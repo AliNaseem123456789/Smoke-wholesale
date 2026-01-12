@@ -1,15 +1,7 @@
 import React from "react";
-
-/**
- * Logos should be placed in:
- * /public/logo/logo1.png
- * ...
- * /public/logo/logo12.png
- */
-
 const logos = Array.from({ length: 12 }, (_, i) => ({
   src: `/logos/logo${i + 1}.jpg`,
-  link: "#", // add real link later
+  link: "#", 
 }));
 
 const LogoMarquee: React.FC = () => {

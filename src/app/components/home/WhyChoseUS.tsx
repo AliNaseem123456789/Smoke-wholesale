@@ -69,7 +69,7 @@ interface FeatureProps {
   title: string;
   description: string;
 }
-
+ 
 const Feature: React.FC<FeatureProps> = ({ icon, title, description }) => {
   return (
     <div className="flex items-start gap-4">

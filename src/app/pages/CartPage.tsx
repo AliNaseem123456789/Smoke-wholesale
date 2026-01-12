@@ -1,51 +1,104 @@
-import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../app/store";
+import { useAuth } from "../../features/auth/context/AuthContext";
+import {
+  removeItemFromCart,
+  addItemToCart,
+  clearCart,
+} from "../../features/cart/cartSlice";
+import {
+  Trash2,
+  Plus,
+  Minus,
+  ShoppingCart,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
+import { toast } from "sonner";
 
-interface CartPageProps {
-  onNavigate: (page: string, params?: any) => void;
-}
+export const CartPage: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
-  const { items, removeFromCart, updateQuantity, clearCart } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  // 1. Get state from Redux
+  const { items, loading } = useSelector((state: RootState) => state.cart);
+  const { user } = useAuth();
+
+  const isAuthenticated = !!user;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const calculateTotal = () => {
-    return items.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  // Calculate total price using the joined 'products' object
+  const calculateTotal = () =>
+    items.reduce(
+      (total, item) => total + (item.products?.price || 0) * item.quantity,
+      0
+    );
+
+  const handleUpdateQuantity = async (productId: number, newQty: number) => {
+    if (newQty < 1) return;
+    try {
+      // Reusing addItemToCart because the backend uses 'upsert'
+      await dispatch(addItemToCart({ productId, quantity: newQty })).unwrap();
+    } catch (err) {
+      toast.error("Failed to update quantity");
+    }
+  };
+
+  const handleRemove = async (productId: number) => {
+    try {
+      await dispatch(removeItemFromCart(productId)).unwrap();
+      toast.success("Item removed");
+    } catch (err) {
+      toast.error("Failed to remove item");
+    }
   };
 
   const handleSubmitQuote = () => {
     if (!isAuthenticated) {
-      toast.error('Please login to submit a quote request');
-      onNavigate('login');
+      toast.error("Please login to submit a quote request");
+      navigate("/login");
       return;
     }
+
     setIsSubmitting(true);
-    // Simulate quote submission
+
+    // Simulate API call for quote submission
     setTimeout(() => {
-      toast.success('Quote request submitted successfully! We will contact you soon.');
-      clearCart();
+      toast.success("Quote request submitted successfully!");
+      dispatch(clearCart());
       setIsSubmitting(false);
-      onNavigate('home');
-    }, 1000);
+      navigate("/");
+    }, 1500);
   };
 
+  // 2. Loading State
+  if (loading && items.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-600 mb-4" />
+        <p className="text-gray-600 font-medium">Fetching your cart...</p>
+      </div>
+    );
+  }
+
+  // 3. Empty State
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-16">
-            <ShoppingCart className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Quote Cart is Empty</h2>
-            <p className="text-gray-600 mb-8">
-              Add products to your cart to request a wholesale quote
+        <div className="max-w-7xl mx-auto px-4 text-center py-16">
+          <div className="bg-white rounded-2xl shadow-sm border p-12 max-w-2xl mx-auto">
+            <ShoppingCart className="w-20 h-20 text-gray-200 mx-auto mb-6" />
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Your Quote Cart is Empty
+            </h2>
+            <p className="text-gray-600 mb-8 text-lg">
+              Add products to your cart to request a wholesale quote.
             </p>
             <button
-              onClick={() => onNavigate('home')}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              onClick={() => navigate("/")}
+              className="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
             >
               Browse Products
             </button>
@@ -54,86 +107,105 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
       </div>
     );
   }
+
+  // 4. Content State
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <button
-            onClick={() => onNavigate('home')}
-            className="text-blue-600 hover:text-blue-700 mb-4 flex items-center gap-2"
-          >
-            ← Continue Shopping
-          </button>
-          <h1 className="text-3xl font-bold text-gray-900">Request Quote</h1>
-          <p className="text-gray-600 mt-2">Review your items and submit for a wholesale quote</p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium mb-6 transition-colors"
+        >
+          <ArrowLeft size={18} /> Continue Shopping
+        </button>
+
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Review Quote Request
+        </h1>
+        <p className="text-gray-600 mb-8">
+          Review your items and submit for a wholesale quote estimate.
+        </p>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
+          {/* Cart Items List */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
-                key={`${item.product.id}-${item.flavor || 'default'}`}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                key={item.product_id}
+                className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
               >
-                <div className="flex gap-4">
+                <div className="flex gap-6">
                   {/* Product Image */}
-                  <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden border">
                     <img
-                      src={item.product.image}
-                      alt={item.product.name}
+                      src={item.products?.image_url || "/placeholder.png"}
+                      alt={item.products?.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
 
                   {/* Product Info */}
                   <div className="flex-1">
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-xs text-blue-600 font-semibold uppercase">
-                          {item.product.brand}
-                        </div>
-                        <h3 className="font-semibold text-gray-900">{item.product.name}</h3>
-                        {item.flavor && (
-                          <p className="text-sm text-gray-600">Flavor: {item.flavor}</p>
-                        )}
+                        <p className="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">
+                          {item.products?.brand}
+                        </p>
+                        <h3 className="text-lg font-bold text-gray-900 leading-tight">
+                          {item.products?.title}
+                        </h3>
                       </div>
                       <button
-                        onClick={() => removeFromCart(item.product.id, item.flavor)}
-                        className="text-red-600 hover:text-red-700 p-1"
-                        aria-label="Remove item"
+                        onClick={() => handleRemove(item.product_id)}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        title="Remove Item"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 size={20} />
                       </button>
                     </div>
 
-                    {/* Quantity Controls */}
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-3">
+                    <div className="flex justify-between items-end mt-6">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200">
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 10, item.flavor)}
-                          className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                          onClick={() =>
+                            handleUpdateQuantity(
+                              item.product_id,
+                              item.quantity - 1
+                            )
+                          }
+                          className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-600"
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus size={18} />
                         </button>
-                        <span className="text-gray-900 font-semibold w-16 text-center">
-                          {item.quantity} units
+                        <span className="font-bold w-12 text-center text-gray-900">
+                          {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 10, item.flavor)}
-                          className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                          onClick={() =>
+                            handleUpdateQuantity(
+                              item.product_id,
+                              item.quantity + 1
+                            )
+                          }
+                          className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-600"
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus size={18} />
                         </button>
                       </div>
+
+                      {/* Pricing */}
                       {isAuthenticated && (
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">
-                            ${item.product.price.toFixed(2)} / unit
-                          </div>
-                          <div className="font-bold text-gray-900">
-                            ${(item.product.price * item.quantity).toFixed(2)}
-                          </div>
+                          <p className="text-sm text-gray-500 mb-1">
+                            ${(item.products?.price || 0).toFixed(2)} per unit
+                          </p>
+                          <p className="text-xl font-black text-gray-900">
+                            $
+                            {(
+                              (item.products?.price || 0) * item.quantity
+                            ).toFixed(2)}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -142,83 +214,64 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
               </div>
             ))}
           </div>
-          {/* Quote Summary */}
+
+          {/* Sticky Summary Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Quote Summary</h2>
-              {isAuthenticated && user && (
-                <div className="mb-6 pb-6 border-b border-gray-200">
-                  <div className="text-sm text-gray-600 mb-1">Business:</div>
-                  <div className="font-semibold text-gray-900">{user.businessName}</div>
-                  <div className="text-sm text-gray-600 mt-2">{user.email}</div>
-                </div>
-              )}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 h-fit sticky top-24 shadow-sm">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">
+                Quote Summary
+              </h2>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-gray-600">
-                  <span>Total Items:</span>
-                  <span className="font-semibold">
-                    {items.reduce((total, item) => total + item.quantity, 0)} units
-                  </span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Product Lines:</span>
-                  <span className="font-semibold">{items.length}</span>
-                </div>
-              </div>
-
-              {isAuthenticated && (
-                <div className="border-t border-gray-200 pt-4 mb-6">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Estimated Total:</span>
-                    <span className="text-2xl font-bold text-gray-900">
+              {isAuthenticated ? (
+                <div className="space-y-4">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Unique Products</span>
+                    <span className="font-semibold text-gray-900">
+                      {items.length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Total Units</span>
+                    <span className="font-semibold text-gray-900">
+                      {items.reduce((acc, item) => acc + item.quantity, 0)}
+                    </span>
+                  </div>
+                  <div className="border-t border-dashed pt-4 flex justify-between items-baseline">
+                    <span className="text-gray-900 font-bold">
+                      Estimated Total
+                    </span>
+                    <span className="text-2xl font-black text-blue-600">
                       ${calculateTotal().toFixed(2)}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Final pricing may vary based on order volume and current promotions
-                  </p>
                 </div>
-              )}
-
-              {!isAuthenticated && (
-                <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-gray-700">
-                    🔒 Login to view pricing and submit quote request
+              ) : (
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm leading-relaxed mb-4">
+                  <p className="font-bold mb-1 flex items-center gap-2">
+                    🔒 Restricted Access
                   </p>
+                  Please login to view wholesale pricing, individual unit costs,
+                  and the final quote total.
                 </div>
               )}
 
               <button
                 onClick={handleSubmitQuote}
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold mt-8 hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:bg-gray-300 disabled:shadow-none flex justify-center items-center gap-2"
               >
-                {isSubmitting ? 'Submitting...' : 'Submit Quote Request'}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} /> Submitting...
+                  </>
+                ) : (
+                  "Submit Quote Request"
+                )}
               </button>
 
-              {!isAuthenticated && (
-                <div className="mt-4 text-center">
-                  <button
-                    onClick={() => onNavigate('login')}
-                    className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
-                  >
-                    Login to Continue
-                  </button>
-                </div>
-              )}
-
-              <button
-                onClick={() => {
-                  if (confirm('Are you sure you want to clear your cart?')) {
-                    clearCart();
-                    toast.success('Cart cleared');
-                  }
-                }}
-                className="w-full mt-3 text-red-600 hover:text-red-700 py-2 text-sm font-semibold"
-              >
-                Clear Cart
-              </button>
+              <p className="text-center text-gray-400 text-xs mt-4 uppercase font-bold tracking-widest">
+                Secure Wholesale Checkout
+              </p>
             </div>
           </div>
         </div>

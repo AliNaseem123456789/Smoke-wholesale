@@ -5,7 +5,7 @@ export const Breadcrumbs: React.FC = () => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  if (pathname === '/') return null; // hide on home
+  if (pathname === '/') return null;
 
   const pathParts = pathname.split('/').filter(Boolean);
 

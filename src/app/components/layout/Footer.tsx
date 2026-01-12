@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 export const Footer: React.FC = () => {
   return (
     <footer className="w-full">
-
-      {/* 🔴 TOP GALAXY SECTION (RESPONSIVE FIXED) */}
       <div
         className="relative text-white px-4 sm:px-6 py-8 sm:py-10"
         style={{
@@ -14,12 +12,9 @@ export const Footer: React.FC = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
         <div className="relative max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-
-          {/* Text */}
           <div className="text-center md:text-left">
             <p className="text-sm opacity-90 mb-2">
               Unbeatable Deals, Endless Choices – Shop Now!
@@ -28,8 +23,6 @@ export const Footer: React.FC = () => {
               Shop Smarter, Save Bigger!
             </h2>
           </div>
-
-          {/* Images */}
           <div className="flex flex-wrap justify-center md:justify-end gap-3 sm:gap-4">
             {["footer1.jpg", "footer2.jpg", "footer3.jpg", "footer4.jpg"].map(
               (img, i) => (
@@ -48,15 +41,10 @@ export const Footer: React.FC = () => {
               )
             )}
           </div>
-
         </div>
       </div>
-
-      {/* ⚪ MAIN FOOTER */}
       <div className="bg-[#f8f8f8] px-6 py-8 text-[#333]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-6">
-
-          {/* Column 1 */}
           <div className="space-y-2">
             <div>
               <h3 className="text-xl font-black tracking-tighter uppercase">
@@ -79,8 +67,6 @@ export const Footer: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Column 2 */}
           <div>
             <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">
               Navigation
@@ -94,8 +80,6 @@ export const Footer: React.FC = () => {
               <li><Link to="/contact" className="hover:text-gray-500">Contact Us</Link></li>
             </ul>
           </div>
-
-          {/* Column 3 */}
           <div>
             <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">
               Stay Connected
@@ -114,8 +98,6 @@ export const Footer: React.FC = () => {
               </button>
             </div>
           </div>
-
-          {/* Column 4 */}
           <div>
             <h4 className="text-sm font-bold border-b border-gray-300 pb-1 mb-2 uppercase">
               Contact Us
@@ -134,7 +116,6 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* WARNING */}
       <div className="bg-white px-6 py-4 border-t border-gray-100">
         <div className="max-w-7xl mx-auto text-[11px] leading-tight text-gray-600 italic">
           <p>
@@ -144,8 +125,6 @@ export const Footer: React.FC = () => {
           </p>
         </div>
       </div>
-
-      {/* Bottom */}
       <div className="bg-[#f8f8f8] border-t border-gray-200 py-3 px-6 text-center text-xs text-gray-500">
         © 2026 Soota Smoke Shop. All rights reserved.
       </div>

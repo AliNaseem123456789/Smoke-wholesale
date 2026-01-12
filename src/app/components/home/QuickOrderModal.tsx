@@ -65,7 +65,9 @@ const QuickOrderModal: React.FC<QuickOrderModalProps> = ({
                   <button onClick={() => updateQty(v, 1)}>
                     <Plus size={14} />
                   </button>
-                  <button onClick={() => setQuantities((p) => ({ ...p, [v]: 0 }))}>
+                  <button
+                    onClick={() => setQuantities((p) => ({ ...p, [v]: 0 }))}
+                  >
                     <Trash2 size={14} />
                   </button>
                 </div>
