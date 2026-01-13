@@ -1,24 +1,44 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Set this so cookies are sent with every request
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
   withCredentials: true,
 });
 
+/* ---------- TYPES ---------- */
+export interface CartItem {
+  product_id: number;
+  quantity: number;
+  products: {
+    id: number;
+    title: string;
+    brand: string;
+    description: string;
+    url?: string;
+    price?: number; // Added since your UI uses it
+  } | null;
+}
+
+interface CartState {
+  items: CartItem[];
+  loading: boolean;
+  error: string | null;
+}
+
 /* ---------- ASYNC THUNKS ---------- */
 
 export const fetchCart = createAsyncThunk("cart/fetch", async () => {
-  const response = await api.get("/cart");
-  return response.data;
+  const response = await api.get("/cart/");
+  return response.data; // Now contains joined product data
 });
 
 export const addItemToCart = createAsyncThunk(
   "cart/addItem",
   async ({ productId, quantity }: { productId: number; quantity: number }) => {
+    // We send to backend, then refetch or handle returned upserted data
     const response = await api.post("/cart/add", { productId, quantity });
-    return response.data; // Returns the added/updated item
+    return response.data;
   }
 );
 
@@ -30,15 +50,13 @@ export const removeItemFromCart = createAsyncThunk(
   }
 );
 
-/* ---------- THE SLICE ---------- */
-
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: [] as any[],
+    items: [],
     loading: false,
-    error: null as string | null,
-  },
+    error: null,
+  } as CartState,
   reducers: {
     clearCart: (state) => {
       state.items = [];
@@ -46,27 +64,31 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch Cart
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("Redux received payload:", action.payload);
-        state.items = action.payload;
+        state.items = Array.isArray(action.payload) ? action.payload : [];
       })
-      // Add Item
       .addCase(addItemToCart.fulfilled, (state, action) => {
+        // Since the backend returns an array from upsert, we grab the first item
+        const updatedItem = Array.isArray(action.payload)
+          ? action.payload[0]
+          : action.payload;
         const index = state.items.findIndex(
-          (item) => item.product_id === action.payload.product_id
+          (item) => item.product_id === updatedItem.product_id
         );
+
         if (index !== -1) {
-          state.items[index] = action.payload; // Update existing
+          // Keep existing product details if the update response is partial
+          state.items[index] = { ...state.items[index], ...updatedItem };
         } else {
-          state.items.push(action.payload); // Add new
+          // If it's a new item, we may need to refetch to get the joined 'products' info
+          // but for now, we push what we have
+          state.items.push(updatedItem);
         }
       })
-      // Remove Item
       .addCase(removeItemFromCart.fulfilled, (state, action) => {
         state.items = state.items.filter(
           (item) => item.product_id !== action.payload
