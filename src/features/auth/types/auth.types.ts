@@ -17,4 +17,5 @@ export type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   register: (data: RegistrationData) => Promise<void>;
   logout: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>; // Add this line
 };

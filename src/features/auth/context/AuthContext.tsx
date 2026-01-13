@@ -1,5 +1,3 @@
-// src/features/auth/context/AuthContext.tsx
-
 import React, {
   createContext,
   useContext,
@@ -8,18 +6,9 @@ import React, {
   ReactNode,
 } from "react";
 
-import {
-  getMe,
-  loginApi,
-  logoutApi,
-  registerApi,
-} from "../api/auth.api";
+import { getMe, loginApi, logoutApi, registerApi } from "../api/auth.api";
 
-import {
-  AuthContextType,
-  RegistrationData,
-  User,
-} from "../types/auth.types";
+import { AuthContextType, RegistrationData, User } from "../types/auth.types";
 
 /* ---------------- CONTEXT ---------------- */
 
@@ -34,22 +23,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   /* ---------- Restore session ---------- */
   useEffect(() => {
     getMe()
-      .then((user) => {
-        if (user) setUser(user);
+      .then((userData) => {
+        if (userData) setUser(userData);
+      })
+      .catch(() => {
+        setUser(null);
       })
       .finally(() => setLoading(false));
   }, []);
 
   /* ---------- Login ---------- */
   const login = async (email: string, password: string) => {
-    const user = await loginApi(email, password);
-    setUser(user);
+    const userData = await loginApi(email, password);
+    setUser(userData);
   };
 
   /* ---------- Register ---------- */
   const register = async (data: RegistrationData) => {
-    const user = await registerApi(data);
-    setUser(user); // auto-login after register
+    const userData = await registerApi(data);
+    setUser(userData); // auto-login after register
   };
 
   /* ---------- Logout ---------- */
@@ -60,7 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout }}
+      // Now including setUser in the provider value
+      value={{ user, loading, login, register, logout, setUser }}
     >
       {children}
     </AuthContext.Provider>

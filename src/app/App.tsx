@@ -13,12 +13,14 @@ import { RegistrationPage } from "../features/auth/pages/RegistrationPage";
 import { CartPage } from "../features/cart/pages/CartPage";
 import { ContactPage } from "./pages/ContactPage";
 import FAQ from "./pages/FAQ";
+import { AccountPage } from "../features/account/pages/AccountPage";
 
 import { BrandProductsPage } from "../features/products/pages/BrandProductsPage";
 import { CategoryProductsPage } from "../features/products/pages/CategoryProductsPage";
 import { ProductDetailPage } from "../features/products/pages/ProductDetailPage";
 import { BrandList } from "../features/products/pages/BrandList";
 
+import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import Testcart from "../features/products/pages/testCart";
 /* -------------------- WRAPPERS -------------------- */
 
@@ -75,13 +77,29 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
 
-          <Route path="/cart" element={<CartPage />} />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/contact" element={<ContactPage />} />
 
           <Route path="/brand" element={<BrandList />} />
           <Route path="/FAQ" element={<FAQ />} />
 
           <Route path="testcart" element={<Testcart />} />
+
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <AccountPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
 
