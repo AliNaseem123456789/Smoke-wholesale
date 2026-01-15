@@ -1,29 +1,18 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import axios from "axios";
+import { API_URL } from "../config/config";
 
-if (!API_BASE_URL) {
-  throw new Error("VITE_API_BASE_URL is not defined");
-}
+export const apiClient = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+});
 
-export async function apiClient<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
-
-  if (!response.ok) {
-    let message = "Something went wrong";
-    try {
-      const error = await response.json();
-      message = error.message || message;
-    } catch {}
-    throw new Error(message);
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Automatically kick user to login if session expires
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
   }
-
-  return response.json() as Promise<T>;
-}
+);

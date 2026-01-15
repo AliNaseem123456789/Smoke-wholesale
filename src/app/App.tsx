@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../app/store";
+import { useAuth } from "../features/auth/context/AuthContext";
+import { fetchCart, clearCart } from "../features/cart/redux/cartSlice";
 
 import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
@@ -22,14 +26,11 @@ import { BrandList } from "../features/products/pages/BrandList";
 
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import Testcart from "../features/products/pages/testCart";
-/* -------------------- WRAPPERS -------------------- */
-
+import { CheckoutPage } from "../features/checkout/pages/CheckoutPage";
 const BrandProductsPageWrapper = () => {
   const { brandName } = useParams();
   const navigate = useNavigate();
-
   if (!brandName) return null;
-
   return (
     <BrandProductsPage
       brandName={decodeURIComponent(brandName)}
@@ -52,9 +53,17 @@ const CategoryProductsPageWrapper = () => {
   );
 };
 
-/* -------------------- APP -------------------- */
-
 function App() {
+  const { user } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCart());
+    } else {
+      dispatch(clearCart());
+    }
+  }, [user, dispatch]);
   return (
     <>
       <ScrollToTop />
@@ -93,6 +102,14 @@ function App() {
           <Route path="testcart" element={<Testcart />} />
 
           <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/account"
             element={
               <ProtectedRoute>
@@ -108,5 +125,4 @@ function App() {
     </>
   );
 }
-
 export default App;
