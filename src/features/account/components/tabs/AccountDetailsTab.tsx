@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { useAuth } from "../../../auth/context/AuthContext";
-import { Save, User, Building, Phone, Mail, CheckCircle } from "lucide-react";
-import axios from "axios"; // or your api util
+import {
+  Save,
+  User,
+  Building,
+  Phone,
+  Mail,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
+import { useUpdateProfile } from "../../hooks/useUpdateProfile";
 
 export const AccountDetailsTab: React.FC = () => {
-  const { user, setUser } = useAuth(); // Assume setUser is in your context to update local state
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const { update, loading, success, error, user } = useUpdateProfile();
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
@@ -15,35 +20,21 @@ export const AccountDetailsTab: React.FC = () => {
     phone: user?.phone || "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setSuccess(false);
-
-    try {
-      const response = await axios.patch(
-        "http://localhost:5000/api/auth/update-profile",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.data.user) {
-        setUser(response.data.user); // Update global auth state
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
-      }
-    } catch (err) {
-      alert("Failed to update profile");
-    } finally {
-      setLoading(false);
-    }
+    update(formData);
   };
 
   return (
     <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name Row */}
+        {error && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600">
+            <AlertCircle size={20} />
+            <p className="text-sm font-medium">{error}</p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-bold text-gray-700">
@@ -64,6 +55,7 @@ export const AccountDetailsTab: React.FC = () => {
               />
             </div>
           </div>
+
           <div className="space-y-2">
             <label className="text-sm font-bold text-gray-700">Last Name</label>
             <input
@@ -77,7 +69,6 @@ export const AccountDetailsTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Business Info */}
         <div className="space-y-2">
           <label className="text-sm font-bold text-gray-700">
             Business Name
@@ -98,7 +89,6 @@ export const AccountDetailsTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Contact Info */}
         <div className="space-y-2">
           <label className="text-sm font-bold text-gray-700">
             Phone Number
@@ -119,7 +109,6 @@ export const AccountDetailsTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Email - Disabled */}
         <div className="space-y-2 opacity-60">
           <label className="text-sm font-bold text-gray-500">
             Email Address (Cannot be changed)
@@ -142,7 +131,7 @@ export const AccountDetailsTab: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-all active:scale-95 disabled:bg-blue-300"
+            className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-all active:scale-95 disabled:bg-blue-300 shadow-lg shadow-blue-100"
           >
             {loading ? (
               "Saving..."
@@ -154,8 +143,8 @@ export const AccountDetailsTab: React.FC = () => {
           </button>
 
           {success && (
-            <span className="text-green-600 font-bold flex items-center gap-1 animate-bounce">
-              <CheckCircle size={18} /> Updated!
+            <span className="text-green-600 font-bold flex items-center gap-1 animate-in fade-in zoom-in">
+              <CheckCircle size={18} /> Updated Successfully!
             </span>
           )}
         </div>

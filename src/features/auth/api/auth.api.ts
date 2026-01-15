@@ -16,10 +16,7 @@ export async function getMe(): Promise<User | null> {
 }
 
 /* ---------- Login ---------- */
-export async function loginApi(
-  email: string,
-  password: string
-): Promise<User> {
+export async function loginApi(email: string, password: string): Promise<User> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -37,12 +34,10 @@ export async function loginApi(
 }
 
 /* ---------- Register ---------- */
-export async function registerApi(
-  payload: RegistrationData
-): Promise<User> {
+export async function registerApi(payload: RegistrationData): Promise<User> {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", credentials: "include" },
     body: JSON.stringify(payload),
   });
 

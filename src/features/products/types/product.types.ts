@@ -1,4 +1,4 @@
-// Basic product used across app
+// 1. The Single Source of Truth
 export interface Product {
   id: string | number;
   title: string;
@@ -7,15 +7,17 @@ export interface Product {
   sku?: string;
   categories?: string[];
   flavors?: string[];
+  price?: number; // Added since your Cart/Detail pages use it
   url?: string;
   created_at?: string;
 }
-// Product with images (UI-specific)
-export interface ProductWithImages extends Product {
-  imageUrls: string[];
-}
 
-// Home API response shape (OLD WAY: json.data)
+/** * DELETE ProductWithImages.
+ * We now use getProductImage(product.id) directly in the UI components
+ * instead of storing URLs in the product object.
+ */
+
+// 2. Updated Home Response Shape
 export interface HomeProductsResponse {
   featured: Product[];
   newArrivals: Product[];

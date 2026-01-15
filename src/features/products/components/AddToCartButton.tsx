@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../app/store";
-import { addItemToCart } from "../../cart/cartSlice";
+import { addItemToCart } from "../../cart/redux/cartSlice";
 import { Loader2, ShoppingCart } from "lucide-react";
 
 interface AddToCartButtonProps {

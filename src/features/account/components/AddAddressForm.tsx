@@ -32,7 +32,7 @@ export const AddAddressForm: React.FC<AddAddressFormProps> = ({
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/addresses", formData, {
+      await axios.post("http://localhost:5000/api/address", formData, {
         withCredentials: true,
       });
       setFormData(initialState); // Reset form

@@ -4,67 +4,24 @@ import { TriangleAlert, Plus, Minus, Lock, ArrowLeft } from "lucide-react";
 import { useProductDetail } from "../hooks/useProductDetails";
 import { useAuth } from "../../auth/context/AuthContext";
 import { AddToCartButton } from "../components/AddToCartButton";
+import { getProductImage } from "../utils/getProductImage";
 
-/* ---------------- HELPERS ---------------- */
-
-const POSSIBLE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
-const MAX_IMAGES = 5;
 const PLACEHOLDER_IMAGE = "/product-placeholder.png";
-
-const getFolderName = (title: string) =>
-  title
-    .trim()
-    .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, "")
-    .replace(/\s+/g, "_")
-    .replace(/[()&%#.+,!\/]/g, "_");
-
-const generateImageUrls = (productTitle: string) => {
-  const folder = getFolderName(productTitle);
-  const urls: string[] = [];
-  for (let i = 1; i <= MAX_IMAGES; i++) {
-    for (const ext of POSSIBLE_EXTENSIONS) {
-      urls.push(`/product-images/${folder}/${i}.${ext}`);
-    }
-  }
-  return urls;
-};
-
-/* ---------------- COMPONENT ---------------- */
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  // Hooks
   const { product, loading, error } = useProductDetail(id);
   const { user, loading: authLoading } = useAuth();
-
-  // Local State
   const [selectedFlavor, setSelectedFlavor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const [images, setImages] = useState<string[]>([]);
-  const [selectedImage, setSelectedImage] = useState<number>(0);
+  const [selectedImageNum, setSelectedImageNum] = useState<number>(1);
 
   useEffect(() => {
     if (!product) return;
     setSelectedFlavor(product.flavors?.[0] || "");
-    setImages(generateImageUrls(product.title));
-    setSelectedImage(0);
+    setSelectedImageNum(1); // Reset to first image when product changes
   }, [product]);
-
-  /* ---------- Handlers ---------- */
-  const handleImageError = (index: number) => {
-    if (index + 1 < images.length) {
-      setSelectedImage(index + 1);
-    }
-  };
-
-  const handleThumbnailError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const parent = e.currentTarget.parentElement;
-    if (parent) parent.style.display = "none";
-  };
-
-  /* ---------- Render States ---------- */
   if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -76,10 +33,23 @@ export const ProductDetailPage: React.FC = () => {
     );
   }
 
-  if (error)
+  if (error) {
     return (
-      <div className="p-6 min-h-screen text-red-600 bg-gray-50">{error}</div>
+      <div className="p-6 min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <TriangleAlert className="mx-auto text-red-500 mb-4" size={48} />
+          <p className="text-red-600 font-bold">{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 text-blue-600 underline"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
     );
+  }
+
   if (!product) return null;
 
   return (
@@ -93,40 +63,42 @@ export const ProductDetailPage: React.FC = () => {
         </button>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 grid md:grid-cols-2 gap-12">
-          {/* LEFT: IMAGE GALLERY */}
           <div>
             <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden border border-gray-100 mb-4">
               <img
-                src={images[selectedImage] || PLACEHOLDER_IMAGE}
+                src={getProductImage(product.id, selectedImageNum)}
                 alt={product.title}
-                onError={() => handleImageError(selectedImage)}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
+                }}
                 className="w-full h-full object-cover transition-all duration-500"
               />
             </div>
-
             <div className="flex gap-3 flex-wrap">
-              {images.slice(0, 10).map((img, idx) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                 <button
-                  key={idx}
-                  onClick={() => setSelectedImage(idx)}
-                  className={`w-16 h-16 border-2 rounded-lg overflow-hidden transition-all ${
-                    selectedImage === idx
-                      ? "border-blue-600 scale-105"
+                  key={num}
+                  onClick={() => setSelectedImageNum(num)}
+                  className={`w-20 h-20 border-2 rounded-lg overflow-hidden transition-all ${
+                    selectedImageNum === num
+                      ? "border-blue-600 scale-105 shadow-md"
                       : "border-gray-100 opacity-70 hover:opacity-100"
                   }`}
                 >
                   <img
-                    src={img}
-                    alt={`${product.title} thumb`}
-                    onError={handleThumbnailError}
+                    src={getProductImage(product.id, num)}
+                    alt={`View ${num}`}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (
+                        e.currentTarget.parentElement as HTMLElement
+                      ).style.display = "none";
+                    }}
                   />
                 </button>
               ))}
             </div>
           </div>
-
-          {/* RIGHT: PRODUCT DETAILS */}
           <div className="flex flex-col">
             <div className="mb-6">
               <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">
@@ -176,7 +148,6 @@ export const ProductDetailPage: React.FC = () => {
               )}
             </div>
 
-            {/* PURCHASE SECTION */}
             <div className="mt-10 pt-8 border-t border-gray-100">
               {user ? (
                 <div className="space-y-6">
@@ -206,6 +177,7 @@ export const ProductDetailPage: React.FC = () => {
                   <AddToCartButton
                     productId={Number(product.id)}
                     quantity={quantity}
+                    flavor={selectedFlavor} // Passing flavor to cart
                   />
                 </div>
               ) : (

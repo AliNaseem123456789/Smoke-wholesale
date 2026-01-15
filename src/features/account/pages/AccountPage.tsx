@@ -12,13 +12,14 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAuth } from "../../auth/context/AuthContext";
-
-// Import your sub-components (we will create these next)
-// import { OrdersTab } from "../components/tabs/OrdersTab";
+import { OrdersTab } from "../components/tabs/OrdersTab";
 // import { AddressTab } from "../components/tabs/AddressTab";
 import { AddressesTab } from "../components/tabs/AddressesTab";
 import { AccountDetailsTab } from "../components/tabs/AccountDetailsTab";
-
+import { TeamTab } from "../components/tabs/TeamTab";
+import { SavedCartsTab } from "../components/tabs/SavedCartsTab";
+import PactCompliance from "../components/tabs/PactTab";
+import { PaymentsTab } from "../components/tabs/PaymentsTab";
 const TABS = [
   { id: "orders", label: "Orders", icon: Package },
   { id: "addresses", label: "Addresses", icon: MapPin },
@@ -27,6 +28,7 @@ const TABS = [
   { id: "saved-carts", label: "Saved Carts", icon: ShoppingBag },
   { id: "payments", label: "Payment History", icon: CreditCard },
   { id: "credit", label: "Total Credit", icon: Wallet },
+  { id: "PACT", label: "PACT", icon: Wallet },
 ];
 
 export const AccountPage: React.FC = () => {
@@ -37,35 +39,34 @@ export const AccountPage: React.FC = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "orders":
-        return <div className="p-4">Orders Table Component (Tab 1)</div>;
+        return <OrdersTab />;
       case "addresses":
         return <AddressesTab />;
       case "details":
         return <AccountDetailsTab />;
       case "subaccounts":
-        return <div className="p-4">Subaccounts List (Tab 4)</div>;
+        return <TeamTab />;
       case "saved-carts":
-        return <div className="p-4">Saved Carts List (Tab 5)</div>;
+        return <SavedCartsTab />;
       case "payments":
-        return <div className="p-4">Payment History Table (Tab 6)</div>;
+        return <PaymentsTab />;
       case "credit":
         return <div className="p-4">Credit Ledger (Tab 7)</div>;
+      case "PACT":
+        return <PactCompliance />;
       default:
         return <div className="p-4">Select a tab</div>;
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-7xl mx-auto w-full px-4 py-10 flex flex-col md:flex-row gap-8">
-        {/* SIDEBAR */}
         <aside className="w-full md:w-72 shrink-0">
           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
             <div className="p-6 border-b border-gray-100 bg-gray-50/50">
               <h2 className="font-bold text-gray-900">My Account</h2>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
-
             <nav className="p-2">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
@@ -101,8 +102,6 @@ export const AccountPage: React.FC = () => {
             </nav>
           </div>
         </aside>
-
-        {/* MAIN CONTENT AREA */}
         <main className="flex-1 bg-white border border-gray-200 rounded-2xl shadow-sm min-h-[600px]">
           <header className="px-8 py-6 border-b border-gray-100 flex justify-between items-center">
             <h1 className="text-xl font-bold text-gray-900 capitalize">
