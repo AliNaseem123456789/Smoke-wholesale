@@ -25,7 +25,7 @@ import { ProductDetailPage } from "../features/products/pages/ProductDetailPage"
 import { BrandList } from "../features/products/pages/BrandList";
 
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
-import Testcart from "../features/products/pages/testCart";
+W;
 import { CheckoutPage } from "../features/checkout/pages/CheckoutPage";
 
 import { UserManagement } from "../features/admin/pages/UserManagement";
@@ -103,8 +103,6 @@ function App() {
 
           <Route path="/brand" element={<BrandList />} />
           <Route path="/FAQ" element={<FAQ />} />
-
-          <Route path="testcart" element={<Testcart />} />
 
           <Route
             path="/checkout"
