@@ -4,7 +4,7 @@ import { getProductImage } from "../utils/getProductImage";
 
 // Import Shared Components
 import ProductCard from "../components/ProductCard";
-import QuickOrderModal from "../../../app/components/home/Quickordermodal";
+import QuickOrderModal from "../../../app/components/home/QuickOrderModal";
 import { Product } from "../types/product.types";
 
 interface CategoryProductsPageProps {
@@ -17,7 +17,7 @@ export const CategoryProductsPage: React.FC<CategoryProductsPageProps> = ({
   onNavigate,
 }) => {
   const { products, loading, error } = useProductsByCategory(
-    categoryName || ""
+    categoryName || "",
   );
 
   // Modal State - Uses base Product type now
