@@ -4,7 +4,7 @@ import { Product } from "../../features/products/types/product.types";
 
 import { HeroSection } from "../components/home/HeroSection";
 import FourFeatureSection from "../components/home/FourFeatures";
-import QuickOrderModal from "../components/home/Quickordermodal";
+import QuickOrderModal from "../components/home/QuickOrderModal";
 import ProductCard from "../../features/products/components/ProductCard";
 import { getProductImage } from "../../features/products/utils/getProductImage";
 
