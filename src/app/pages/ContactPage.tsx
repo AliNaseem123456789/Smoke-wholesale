@@ -1,30 +1,29 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+interface ContactPageProps {}
 
-interface ContactPageProps {
-  onNavigate: (page: string) => void;
-}
-
-export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
+export const ContactPage: React.FC<ContactPageProps> = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Message sent! We will get back to you soon.');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    toast.success("Message sent! We will get back to you soon.");
+    setFormData({ name: "", email: "", phone: "", message: "" });
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <button
-          onClick={() => onNavigate('home')}
+          onClick={() => navigate("home")}
           className="text-blue-600 hover:text-blue-700 mb-6 flex items-center gap-2"
         >
           ← Back to Home
@@ -40,8 +39,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
-            
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Send us a Message
+            </h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -50,7 +51,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Your name"
@@ -64,7 +67,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="your@email.com"
@@ -78,7 +83,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="(555) 123-4567"
                 />
@@ -90,7 +97,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 </label>
                 <textarea
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   required
                   rows={5}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -110,13 +119,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
           {/* Contact Information */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-              
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Contact Information
+              </h2>
+
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <Mail className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <div className="font-semibold text-gray-900 mb-1">Email</div>
+                    <div className="font-semibold text-gray-900 mb-1">
+                      Email
+                    </div>
                     <div className="text-gray-600">support@sootasmoke.com</div>
                   </div>
                 </div>
@@ -124,7 +137,9 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <div className="flex items-start gap-4">
                   <Phone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <div className="font-semibold text-gray-900 mb-1">Phone</div>
+                    <div className="font-semibold text-gray-900 mb-1">
+                      Phone
+                    </div>
                     <div className="text-gray-600">(516) 485-4343</div>
                   </div>
                 </div>
@@ -132,9 +147,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <div className="flex items-start gap-4">
                   <MapPin className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <div className="font-semibold text-gray-900 mb-1">Address</div>
+                    <div className="font-semibold text-gray-900 mb-1">
+                      Address
+                    </div>
                     <div className="text-gray-600">
-                      34 Nassau Blvd<br />
+                      34 Nassau Blvd
+                      <br />
                       Garden City, NY 11530
                     </div>
                   </div>
@@ -143,9 +161,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 <div className="flex items-start gap-4">
                   <Clock className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                   <div>
-                    <div className="font-semibold text-gray-900 mb-1">Business Hours</div>
+                    <div className="font-semibold text-gray-900 mb-1">
+                      Business Hours
+                    </div>
                     <div className="text-gray-600">
-                      Monday - Saturday: 8:00 AM - 9:00 PM<br />
+                      Monday - Saturday: 8:00 AM - 9:00 PM
+                      <br />
                       Sunday: 10:00 AM - 8:00 PM
                     </div>
                   </div>
@@ -154,10 +175,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="font-semibold text-blue-900 mb-2">Wholesale Support</h3>
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Wholesale Support
+              </h3>
               <p className="text-sm text-blue-800">
-                Our dedicated wholesale team is here to help you with product inquiries, 
-                bulk orders, and account management. Average response time: 2-4 business hours.
+                Our dedicated wholesale team is here to help you with product
+                inquiries, bulk orders, and account management. Average response
+                time: 2-4 business hours.
               </p>
             </div>
           </div>

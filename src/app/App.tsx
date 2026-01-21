@@ -25,7 +25,6 @@ import { ProductDetailPage } from "../features/products/pages/ProductDetailPage"
 import { BrandList } from "../features/products/pages/BrandList";
 
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
-W;
 import { CheckoutPage } from "../features/checkout/pages/CheckoutPage";
 
 import { UserManagement } from "../features/admin/pages/UserManagement";
