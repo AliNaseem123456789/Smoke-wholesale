@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://smoke-wholesale-backend-production.up.railway.app/api",
   withCredentials: true,
 });
 
@@ -39,7 +39,7 @@ export const addItemToCart = createAsyncThunk(
     // We send to backend, then refetch or handle returned upserted data
     const response = await api.post("/cart/add", { productId, quantity });
     return response.data;
-  }
+  },
 );
 
 export const removeItemFromCart = createAsyncThunk(
@@ -47,7 +47,7 @@ export const removeItemFromCart = createAsyncThunk(
   async (productId: number) => {
     await api.delete(`/cart/${productId}`);
     return productId;
-  }
+  },
 );
 
 const cartSlice = createSlice({
@@ -77,7 +77,7 @@ const cartSlice = createSlice({
           ? action.payload[0]
           : action.payload;
         const index = state.items.findIndex(
-          (item) => item.product_id === updatedItem.product_id
+          (item) => item.product_id === updatedItem.product_id,
         );
 
         if (index !== -1) {
@@ -91,7 +91,7 @@ const cartSlice = createSlice({
       })
       .addCase(removeItemFromCart.fulfilled, (state, action) => {
         state.items = state.items.filter(
-          (item) => item.product_id !== action.payload
+          (item) => item.product_id !== action.payload,
         );
       });
   },

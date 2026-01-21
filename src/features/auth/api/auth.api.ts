@@ -1,9 +1,5 @@
-// src/features/auth/api/auth.api.ts
-
 import { API_URL } from "../../../config/config";
 import { RegistrationData, User } from "../types/auth.types";
-
-/* ---------- Restore session ---------- */
 export async function getMe(): Promise<User | null> {
   const res = await fetch(`${API_URL}/auth/me`, {
     credentials: "include",
@@ -14,8 +10,6 @@ export async function getMe(): Promise<User | null> {
   const data = await res.json();
   return data.user;
 }
-
-/* ---------- Login ---------- */
 export async function loginApi(email: string, password: string): Promise<User> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
@@ -32,8 +26,6 @@ export async function loginApi(email: string, password: string): Promise<User> {
 
   return data.user;
 }
-
-/* ---------- Register ---------- */
 export async function registerApi(payload: RegistrationData): Promise<User> {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
@@ -49,8 +41,6 @@ export async function registerApi(payload: RegistrationData): Promise<User> {
 
   return data.user;
 }
-
-/* ---------- Logout ---------- */
 export async function logoutApi(): Promise<void> {
   await fetch(`${API_URL}/auth/logout`, {
     method: "POST",

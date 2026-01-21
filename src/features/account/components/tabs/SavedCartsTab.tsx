@@ -19,8 +19,6 @@ export const SavedCartsTab: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detailData, setDetailData] = useState<any>(null);
   const [detailLoading, setDetailLoading] = useState(false);
-
-  // Fetch details when an ID is selected
   useEffect(() => {
     if (selectedId) {
       const fetchDetails = async () => {
@@ -184,7 +182,7 @@ export const SavedCartsTab: React.FC = () => {
             {templates.map((template) => {
               const totalUnits = template.items.reduce(
                 (acc: number, item: any) => acc + item.quantity,
-                0
+                0,
               );
               return (
                 <tr

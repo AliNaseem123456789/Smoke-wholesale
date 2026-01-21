@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:5000/api/cart";
+const API_URL =
+  "https://smoke-wholesale-backend-production.up.railway.app/api/cart";
 
 export default function Testcart() {
   const [cart, setCart] = useState([]);

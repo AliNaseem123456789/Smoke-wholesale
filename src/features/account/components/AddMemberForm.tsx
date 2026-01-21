@@ -9,11 +9,13 @@ interface Props {
 
 export const AddMemberForm: React.FC<Props> = ({ onBack, onSuccess }) => {
   const [loading, setLoading] = useState(false);
+  const [canPlaceOrder, setCanPlaceOrder] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     firstName: "",
     lastName: "",
+    canPlaceOrder,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,7 +23,7 @@ export const AddMemberForm: React.FC<Props> = ({ onBack, onSuccess }) => {
     setLoading(true);
     try {
       await teamService.addMember(formData);
-      onSuccess(); // This will refresh the team list and go back
+      onSuccess();
     } catch (err) {
       alert("Error adding member. Email might already be in use.");
     } finally {
@@ -104,7 +106,21 @@ export const AddMemberForm: React.FC<Props> = ({ onBack, onSuccess }) => {
             }
           />
         </div>
-
+        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100 mb-6">
+          <input
+            type="checkbox"
+            id="canPlaceOrder"
+            checked={canPlaceOrder}
+            onChange={(e) => setCanPlaceOrder(e.target.checked)}
+            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <label
+            htmlFor="canPlaceOrder"
+            className="text-sm font-bold text-gray-700 cursor-pointer"
+          >
+            Allow this member to place orders immediately
+          </label>
+        </div>
         <button
           type="submit"
           disabled={loading}

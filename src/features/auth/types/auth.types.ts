@@ -4,6 +4,9 @@ export type User = {
   id: string;
   email: string;
   role: string;
+  permissions?: {
+    can_place_order: boolean;
+  };
 };
 
 export type RegistrationData = {

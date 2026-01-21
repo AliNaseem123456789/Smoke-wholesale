@@ -9,10 +9,10 @@ export const useOrders = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/orders/my-orders",
+        "https://smoke-wholesale-backend-production.up.railway.app/api/orders/my-orders",
         {
           withCredentials: true,
-        }
+        },
       );
       setOrders(res.data.data);
     } catch (err) {

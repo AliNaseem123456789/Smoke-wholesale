@@ -32,16 +32,20 @@ export const AddAddressForm: React.FC<AddAddressFormProps> = ({
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/address", formData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "https://smoke-wholesale-backend-production.up.railway.app/api/address",
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
       setFormData(initialState); // Reset form
       onSuccess(); // Refresh parent list
     } catch (err: any) {
       console.error("Error adding address:", err.response?.data || err.message);
       alert(
         err.response?.data?.message ||
-          "Failed to save address. Please check all fields."
+          "Failed to save address. Please check all fields.",
       );
     } finally {
       setLoading(false);

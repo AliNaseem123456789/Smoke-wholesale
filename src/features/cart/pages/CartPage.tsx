@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   Save,
   CreditCard,
+  Lock,
 } from "lucide-react";
 
 const PLACEHOLDER_IMAGE = "/product-placeholder.png";
@@ -26,6 +27,13 @@ export const CartPage: React.FC = () => {
   const { user } = useAuth();
   const { loading } = useSelector((state: RootState) => state.cart);
   const isAuthenticated = !!user;
+
+  // Permission Logic
+  const canCheckout =
+    user?.role === "ADMIN" ||
+    user?.role === "USER" ||
+    (user?.role === "SUBACCOUNT" &&
+      user?.permissions?.can_place_order === true);
 
   const { items, calculateTotal, handleUpdateQuantity, handleRemove } =
     useCartActions();
@@ -75,7 +83,6 @@ export const CartPage: React.FC = () => {
         </button>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* List Section */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
@@ -123,7 +130,7 @@ export const CartPage: React.FC = () => {
                         onClick={() =>
                           handleUpdateQuantity(
                             item.product_id,
-                            item.quantity - 1
+                            item.quantity - 1,
                           )
                         }
                         className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all"
@@ -137,7 +144,7 @@ export const CartPage: React.FC = () => {
                         onClick={() =>
                           handleUpdateQuantity(
                             item.product_id,
-                            item.quantity + 1
+                            item.quantity + 1,
                           )
                         }
                         className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all"
@@ -164,8 +171,6 @@ export const CartPage: React.FC = () => {
               </div>
             ))}
           </div>
-
-          {/* Sidebar Section */}
           <div className="lg:col-span-1">
             <div className="bg-white border border-gray-100 rounded-3xl p-6 sticky top-24 shadow-sm">
               <h2 className="text-xl font-bold mb-6 text-gray-900">
@@ -197,15 +202,36 @@ export const CartPage: React.FC = () => {
               )}
 
               <div className="space-y-3 mt-8">
-                <button
-                  onClick={() => navigate("/checkout")}
-                  disabled={items.length === 0}
-                  className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-lg shadow-blue-100 active:scale-[0.98]"
-                >
-                  <CreditCard size={20} />
-                  Proceed to Checkout
-                </button>
-
+                {!isAuthenticated ? (
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition-all"
+                  >
+                    Login to Checkout
+                  </button>
+                ) : canCheckout ? (
+                  <button
+                    onClick={() => navigate("/checkout")}
+                    disabled={items.length === 0}
+                    className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-lg shadow-blue-100 active:scale-[0.98]"
+                  >
+                    <CreditCard size={20} />
+                    Proceed to Checkout
+                  </button>
+                ) : (
+                  <div className="bg-red-50 border border-red-100 rounded-2xl p-4 text-center">
+                    <div className="flex justify-center mb-2">
+                      <Lock className="text-red-500" size={24} />
+                    </div>
+                    <p className="text-red-700 font-bold text-sm">
+                      Checkout Restricted
+                    </p>
+                    <p className="text-red-500 text-[11px] mt-1 leading-tight">
+                      You don't have permissions for checkout. Please contact
+                      the account owner.
+                    </p>
+                  </div>
+                )}
                 <button
                   onClick={() => handleSave(items, calculateTotal())}
                   disabled={isSaving || items.length === 0}

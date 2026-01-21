@@ -10,13 +10,14 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE =
+  "https://smoke-wholesale-backend-production.up.railway.app//api";
 
 export const CheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -68,7 +69,7 @@ export const CheckoutPage = () => {
           billing_address_id: selectedAddressId,
           business_name: "",
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       navigate("/account?tab=orders", { state: { orderSuccess: true } });
     } catch (err: any) {

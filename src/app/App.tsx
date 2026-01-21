@@ -27,6 +27,11 @@ import { BrandList } from "../features/products/pages/BrandList";
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import Testcart from "../features/products/pages/testCart";
 import { CheckoutPage } from "../features/checkout/pages/CheckoutPage";
+
+import { UserManagement } from "../features/admin/pages/UserManagement";
+import { AdminRoute } from "../features/admin/components/AdminRoute";
+import { ProductManagement } from "../features/admin/pages/ProductManagement";
+import { AdminDashboard } from "../features/admin/pages/AdminDashboard";
 const BrandProductsPageWrapper = () => {
   const { brandName } = useParams();
   const navigate = useNavigate();
@@ -116,6 +121,13 @@ function App() {
                 <AccountPage />
               </ProtectedRoute>
             }
+          />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+          <Route
+            path="/admin-product-management"
+            element={<ProductManagement />}
           />
         </Routes>
       </main>

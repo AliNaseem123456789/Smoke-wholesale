@@ -6,15 +6,12 @@ import { AddMemberForm } from "../AddMemberForm";
 export const TeamTab = () => {
   const { team, loading, toggleAccess, refresh } = useTeam();
   const [view, setView] = useState<"list" | "add">("list");
-
   if (loading)
     return (
       <div className="p-20 text-center">
         <Loader2 className="animate-spin mx-auto text-blue-600" />
       </div>
     );
-
-  // VIEW 1: ADD MEMBER FORM
   if (view === "add") {
     return (
       <AddMemberForm
@@ -26,8 +23,6 @@ export const TeamTab = () => {
       />
     );
   }
-
-  // VIEW 2: TEAM LIST
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <header className="flex justify-between items-center bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm">
@@ -44,7 +39,6 @@ export const TeamTab = () => {
           <UserPlus size={18} /> Add Staff Member
         </button>
       </header>
-
       <div className="bg-white border border-gray-100 rounded-[32px] overflow-hidden shadow-sm">
         <table className="w-full text-left">
           <thead className="bg-gray-50/50 border-b border-gray-50">
@@ -97,7 +91,7 @@ export const TeamTab = () => {
                       onClick={() =>
                         toggleAccess(
                           member.id,
-                          member.permissions.can_place_order
+                          member.permissions.can_place_order,
                         )
                       }
                       className={`p-1 rounded-full transition-all active:scale-90 ${member.permissions.can_place_order ? "text-green-500" : "text-gray-300"}`}

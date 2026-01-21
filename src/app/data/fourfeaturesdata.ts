@@ -4,8 +4,8 @@ interface FeatureItem {
 }
 
 export const features: FeatureItem[] = [
-  { image: "/logos/banner1.jpg", link: "/category/liquor" },
-  { image: "/logos/banner2.jpg", link: "/category/tobacco" },
-  { image: "/logos/banner3.jpg", link: "/category/cannabis" },
-  { image: "/logos/banner4.jpg", link: "/category/snacks" },
+  { image: "/FourFeatures/banner1.jpg", link: "/category/liquor" },
+  { image: "/FourFeatures/banner2.jpg", link: "/category/tobacco" },
+  { image: "/FourFeatures/banner3.jpg", link: "/category/cannabis" },
+  { image: "/FourFeatures/banner4.jpg", link: "/category/snacks" },
 ];
