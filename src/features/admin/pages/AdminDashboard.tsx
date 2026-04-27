@@ -3,12 +3,10 @@ import { Users, Package, LayoutDashboard, Settings } from "lucide-react";
 import { UserManagement } from "./UserManagement";
 import { ProductManagement } from "./ProductManagement";
 import { FeatureSettings } from "./FeaturesManagement";
-
 type AdminTab = "users" | "products" | "features";
 
 export const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>("products");
-
   const tabs = [
     { id: "products", label: "Inventory", icon: Package },
     { id: "users", label: "Users", icon: Users },
@@ -17,7 +15,6 @@ export const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Sidebar / Header Navigation */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -29,7 +26,6 @@ export const AdminDashboard = () => {
                 Admin<span className="text-blue-600">Portal</span>
               </span>
             </div>
-
             <nav className="flex gap-1">
               {tabs.map((tab) => (
                 <button
@@ -50,8 +46,6 @@ export const AdminDashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Dynamic Content Area */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto">
           {activeTab === "products" && <ProductManagement />}

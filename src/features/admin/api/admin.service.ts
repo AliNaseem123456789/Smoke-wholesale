@@ -1,16 +1,13 @@
 import { apiClient } from "../../../api/apiClient";
-import { supabase } from "../../../lib/supabase";
 export const adminService = {
   getUsers: async () => {
     const { data } = await apiClient.get("/admin/users");
     return data;
   },
-
   deleteUser: async (userId: string) => {
     const { data } = await apiClient.delete(`/admin/users/${userId}`);
     return data;
   },
-
   updateRole: async (userId: string, role: "ADMIN" | "USER") => {
     const { data } = await apiClient.patch(`/admin/users/${userId}/role`, {
       role,
@@ -27,21 +24,17 @@ export const adminService = {
     );
     return data;
   },
-
   uploadProductImage: async (file: File, productId: string) => {
     const formData = new FormData();
     formData.append("image", file);
     formData.append("productId", productId);
-
     const { data } = await apiClient.post("/admin/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-
     return data.url;
   },
-
   createProduct: async (productData: any) => {
     const payload = { ...productData };
     if (payload.price) payload.price = Number(payload.price);
@@ -49,11 +42,9 @@ export const adminService = {
     if (!payload.url || payload.url === "") {
       delete payload.url;
     }
-
     const { data } = await apiClient.post("/admin/products", payload);
     return data;
   },
-
   updateProduct: async (id: string, productData: any) => {
     const payload = { ...productData };
     if (payload.price) payload.price = Number(payload.price);
@@ -61,7 +52,6 @@ export const adminService = {
       payload.categories = [payload.category];
       delete payload.category;
     }
-
     const { data } = await apiClient.patch(`/admin/products/${id}`, payload);
     return data;
   },
@@ -79,7 +69,6 @@ export const adminService = {
     });
     return data;
   },
-
   getSettings: async () => {
     const { data } = await apiClient.get("/admin/settings");
     return data;

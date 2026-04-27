@@ -3,18 +3,15 @@ import { Package, Clock, CheckCircle2, Eye, Printer } from "lucide-react";
 import { useOrders } from "../../hooks/useOrders";
 import { OrderDetail } from "../OrderDetails";
 import { Order } from "../../types/order.types";
-
 export const OrdersTab = () => {
   const { orders, loading } = useOrders();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
   if (loading)
     return (
       <div className="p-10 text-center font-medium text-gray-500">
         Loading your orders...
       </div>
     );
-
   if (orders.length === 0)
     return (
       <div className="p-20 text-center bg-gray-50 rounded-3xl border-2 border-dashed">
@@ -24,7 +21,6 @@ export const OrdersTab = () => {
         </p>
       </div>
     );
-
   if (selectedOrder)
     return (
       <OrderDetail
@@ -32,7 +28,6 @@ export const OrdersTab = () => {
         onBack={() => setSelectedOrder(null)}
       />
     );
-
   return (
     <div className="bg-white border border-gray-200 rounded-[32px] overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
@@ -73,8 +68,6 @@ export const OrdersTab = () => {
     </div>
   );
 };
-
-// Internal Row Component for scannability
 const OrderRow = ({ order, onView }: { order: Order; onView: () => void }) => (
   <tr className="hover:bg-blue-50/30 transition-colors group">
     <td className="px-6 py-5 font-mono text-xs font-bold text-blue-600">

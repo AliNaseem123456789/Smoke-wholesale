@@ -1,4 +1,3 @@
-import React from "react";
 import { Edit, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { getProductImage } from "../../../products/utils/getProductImage";
 
@@ -10,7 +9,6 @@ interface ProductTableProps {
   onEdit: (product: any) => void;
   onDelete: (id: string) => void;
 }
-
 export const ProductTable = ({
   products,
   currentPage,
@@ -73,8 +71,6 @@ export const ProductTable = ({
           ))}
         </tbody>
       </table>
-
-      {/* Pagination Footer */}
       <div className="p-4 border-t bg-white flex items-center justify-between">
         <p className="text-sm text-gray-500 font-medium">
           Showing page <span className="text-gray-900">{currentPage}</span> of{" "}

@@ -14,7 +14,6 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* --- ACTIONS BAR (HIDDEN ON PRINT) --- */}
       <div className="flex justify-between items-center print:hidden">
         <button
           onClick={onBack}
@@ -29,10 +28,7 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
           <Printer size={18} /> Print Invoice
         </button>
       </div>
-
-      {/* --- INVOICE CONTAINER --- */}
       <div className="bg-white border border-gray-200 rounded-[32px] overflow-hidden shadow-sm p-8 md:p-12 print:border-0 print:shadow-none">
-        {/* HEADER SECTION */}
         <div className="flex justify-between items-start mb-12">
           <div>
             <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tighter">
@@ -55,10 +51,7 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
             </p>
           </div>
         </div>
-
-        {/* INFO GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-          {/* SHIPPING */}
           <div>
             <div className="flex items-center gap-2 text-blue-600 mb-4 print:text-black">
               <MapPin size={18} />
@@ -88,8 +81,6 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
               </p>
             </div>
           </div>
-
-          {/* BUSINESS INFO */}
           <div>
             <div className="flex items-center gap-2 text-gray-400 mb-4 print:text-black">
               <Building2 size={18} />
@@ -121,8 +112,6 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
             </div>
           </div>
         </div>
-
-        {/* ITEMS TABLE */}
         <div className="border border-gray-100 rounded-[24px] overflow-hidden mb-8 print:border-gray-200">
           <table className="w-full text-left">
             <thead className="bg-gray-50 print:bg-gray-100">
@@ -168,8 +157,6 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
             </tbody>
           </table>
         </div>
-
-        {/* SUMMARY SECTION */}
         <div className="flex flex-col items-end pt-6">
           <div className="w-full md:w-80 space-y-4">
             <div className="flex justify-between items-center text-gray-500 px-2">
@@ -195,8 +182,6 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ order, onBack }) => {
             </div>
           </div>
         </div>
-
-        {/* FOOTER (ONLY VISIBLE ON PRINT) */}
         <div className="hidden print:block mt-20 text-center border-t border-gray-100 pt-10">
           <p className="text-gray-400 text-xs font-medium">
             Thank you for your business. For any questions regarding this

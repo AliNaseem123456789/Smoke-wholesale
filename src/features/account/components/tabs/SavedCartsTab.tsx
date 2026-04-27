@@ -43,8 +43,6 @@ export const SavedCartsTab: React.FC = () => {
         <Loader2 className="animate-spin text-blue-600" size={32} />
       </div>
     );
-
-  // --- DETAIL VIEW ---
   if (selectedId && detailData) {
     return (
       <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">

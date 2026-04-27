@@ -64,8 +64,6 @@ export const AddressesTab: React.FC = () => {
           onCancel={() => setShowForm(false)}
         />
       )}
-
-      {/* Address Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {addresses.map((addr) => (
           <div
@@ -86,7 +84,6 @@ export const AddressesTab: React.FC = () => {
               <div
                 className={`p-3 rounded-xl ${addr.is_default ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"}`}
               >
-                {/* Defensive check for address_type */}
                 {addr.address_type?.toLowerCase() === "billing" ? (
                   <Briefcase size={20} />
                 ) : (

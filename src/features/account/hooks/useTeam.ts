@@ -24,18 +24,17 @@ export const useTeam = () => {
 
   const toggleAccess = async (id: string, currentStatus: boolean) => {
     try {
-      // Optimistic Update: Update UI before server responds
       setTeam((prev) =>
         prev.map((m) =>
           m.id === id
             ? { ...m, permissions: { can_place_order: !currentStatus } }
-            : m
-        )
+            : m,
+        ),
       );
       await teamService.togglePermission(id, !currentStatus);
     } catch (err) {
       alert("Permission update failed");
-      getTeam(); // Rollback on error
+      getTeam();
     }
   };
 

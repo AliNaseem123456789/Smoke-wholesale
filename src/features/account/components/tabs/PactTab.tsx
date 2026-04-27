@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ShieldCheck, FileText, Info, Send, Phone, Mail } from "lucide-react";
-
 const PactCompliance: React.FC = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -10,17 +9,14 @@ const PactCompliance: React.FC = () => {
     licenseNumber: "",
     state: "",
   });
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("PACT Form Submitted (Dummy):", formData);
     alert("Form submitted! This is currently a dummy action.");
   };
-
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header Section */}
         <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-gray-100 mb-8">
           <div className="flex items-center gap-3 mb-6 text-blue-600">
             <ShieldCheck size={32} strokeWidth={2.5} />
@@ -28,7 +24,6 @@ const PactCompliance: React.FC = () => {
               PACT ACT
             </h1>
           </div>
-
           <div className="prose prose-blue text-gray-600 space-y-4 leading-relaxed">
             <p className="font-bold text-gray-800">
               To ensure compliance with the ongoing PACT Act, all current and
@@ -36,8 +31,8 @@ const PactCompliance: React.FC = () => {
               information.
             </p>
             <p>
-              In addition, all accounts{" "}
-              <span className="text-red-600 font-bold underline">MUST</span>{" "}
+              In addition, all accounts
+              <span className="text-red-600 font-bold underline">MUST</span>
               fill out our PACT Act form and send in the necessary documents to
               continue receiving orders from RZ Smoke. Any business document
               that is required in your state MUST be submitted (Tobacco License,
@@ -72,8 +67,6 @@ const PactCompliance: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Dummy Form Section */}
         <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-8">
             <FileText className="text-gray-400" size={20} />
@@ -81,12 +74,10 @@ const PactCompliance: React.FC = () => {
               Compliance Form
             </h2>
           </div>
-
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            {/* Email Address */}
             <div className="md:col-span-2">
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Email Address *
@@ -102,8 +93,6 @@ const PactCompliance: React.FC = () => {
                 }
               />
             </div>
-
-            {/* Owner First Name */}
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Owner Legal First Name *
@@ -118,8 +107,6 @@ const PactCompliance: React.FC = () => {
                 }
               />
             </div>
-
-            {/* Owner Last Name */}
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Owner Legal Last Name *
@@ -134,8 +121,6 @@ const PactCompliance: React.FC = () => {
                 }
               />
             </div>
-
-            {/* Business Name */}
             <div className="md:col-span-2">
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Legal Business Name *
@@ -150,8 +135,6 @@ const PactCompliance: React.FC = () => {
                 }
               />
             </div>
-
-            {/* State Selection */}
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Business State *
@@ -169,8 +152,6 @@ const PactCompliance: React.FC = () => {
                 <option value="TX">Texas</option>
               </select>
             </div>
-
-            {/* Tobacco License */}
             <div>
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 ml-1">
                 Tobacco / OTP License #

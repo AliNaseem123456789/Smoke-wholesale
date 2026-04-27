@@ -4,45 +4,36 @@ import { toast } from "sonner";
 import { Package, Plus, Loader2, Search, X } from "lucide-react";
 import { ProductTable } from "../components/ProductManagement/ProductTable";
 import { ProductModal } from "../components/ProductManagement/ProductModal";
-
 export const ProductManagement = () => {
-
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
-
   const [cache, setCache] = useState<
     Record<string, { products: any[]; totalPages: number }>
   >({});
-
   const fetchProducts = useCallback(
     async (forceRefresh = false) => {
       const cacheKey = searchQuery
         ? `search-${searchQuery}-${currentPage}`
         : `page-${currentPage}`;
-
       if (!forceRefresh && cache[cacheKey]) {
         setProducts(cache[cacheKey].products);
         setTotalPages(cache[cacheKey].totalPages);
         setLoading(false);
         return;
       }
-
       try {
         setLoading(true);
-
         const response = await adminService.getProducts(
           currentPage,
           itemsPerPage,
-          searchQuery
+          searchQuery,
         );
-
         if (response && response.products) {
           const newData = {
             products: response.products,
@@ -50,7 +41,6 @@ export const ProductManagement = () => {
           };
           setProducts(newData.products);
           setTotalPages(newData.totalPages);
-
           setCache((prev) => ({
             ...prev,
             [cacheKey]: newData,
@@ -62,21 +52,19 @@ export const ProductManagement = () => {
         setLoading(false);
       }
     },
-    [currentPage, searchQuery, cache]
+    [currentPage, searchQuery, cache],
   );
-
   const prefetchNextPage = useCallback(async () => {
     const nextPage = currentPage + 1;
     const nextCacheKey = searchQuery
       ? `search-${searchQuery}-${nextPage}`
       : `page-${nextPage}`;
-
     if (nextPage <= totalPages && !cache[nextCacheKey]) {
       try {
         const response = await adminService.getProducts(
           nextPage,
           itemsPerPage,
-          searchQuery
+          searchQuery,
         );
         if (response && response.products) {
           setCache((prev) => ({
@@ -92,43 +80,34 @@ export const ProductManagement = () => {
       }
     }
   }, [currentPage, totalPages, searchQuery, cache]);
-
   useEffect(() => {
-
     const delayDebounceFn = setTimeout(
       () => {
         fetchProducts();
       },
-      searchQuery ? 400 : 0
+      searchQuery ? 400 : 0,
     );
-
     return () => clearTimeout(delayDebounceFn);
   }, [currentPage, searchQuery]);
-
   useEffect(() => {
     if (!loading) {
       const timer = setTimeout(() => prefetchNextPage(), 600);
       return () => clearTimeout(timer);
     }
   }, [loading, currentPage, searchQuery, prefetchNextPage]);
-
   const handleDataChange = () => {
     setCache({});
     if (currentPage === 1) fetchProducts(true);
     else setCurrentPage(1);
   };
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
-
   };
-
   const clearSearch = () => {
     setSearchQuery("");
     setCurrentPage(1);
   };
-
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this product?")) return;
     try {
@@ -139,7 +118,6 @@ export const ProductManagement = () => {
       toast.error("Delete failed");
     }
   };
-
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -149,9 +127,7 @@ export const ProductManagement = () => {
           </h2>
           <p className="text-gray-500 text-sm">Managing catalog items</p>
         </div>
-
         <div className="flex items-center gap-3 w-full md:w-auto">
-          {}
           <div className="relative flex-1 md:w-64">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -173,7 +149,6 @@ export const ProductManagement = () => {
               </button>
             )}
           </div>
-
           <button
             onClick={() => {
               setSelectedProduct(null);
@@ -221,7 +196,6 @@ export const ProductManagement = () => {
           </button>
         </div>
       )}
-
       <ProductModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -3,13 +3,11 @@ import { adminService } from "../api/admin.service";
 import { useAuth } from "../../auth/context/AuthContext";
 import { toast } from "sonner";
 import { Search, Trash2, UserCog } from "lucide-react";
-
 export const UserManagement = () => {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-
   const fetchUsers = async () => {
     try {
       const data = await adminService.getUsers();
@@ -20,17 +18,14 @@ export const UserManagement = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchUsers();
   }, []);
-
   const filteredUsers = useMemo(() => {
     return users.filter((u) =>
       u.email.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [users, searchTerm]);
-
   const handleRoleChange = async (
     userId: string,
     newRole: "ADMIN" | "USER",
@@ -45,14 +40,11 @@ export const UserManagement = () => {
       toast.error("Failed to update role");
     }
   };
-
   const handleDelete = async (id: string) => {
     if (id === currentUser?.id) {
       return toast.error("You cannot delete your own admin account!");
     }
-
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-
     try {
       await adminService.deleteUser(id);
       setUsers(users.filter((u) => u.id !== id));
@@ -61,14 +53,12 @@ export const UserManagement = () => {
       toast.error("Delete failed");
     }
   };
-
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
-
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto">
@@ -81,8 +71,6 @@ export const UserManagement = () => {
               Manage permissions and account status
             </p>
           </div>
-
-          {}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -94,7 +82,6 @@ export const UserManagement = () => {
             />
           </div>
         </div>
-
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>

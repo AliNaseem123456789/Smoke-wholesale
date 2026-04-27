@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchCreditHistory } from "../../api/credit.api";
 import { Wallet, Loader2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
-
 export const CreditTab = () => {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,17 +16,14 @@ export const CreditTab = () => {
     (acc, curr) => acc + Number(curr.amount),
     0,
   );
-
   if (loading)
     return (
       <div className="flex justify-center py-20">
         <Loader2 className="animate-spin text-blue-600" />
       </div>
     );
-
   return (
     <div className="space-y-8">
-      {/* Balance Card */}
       <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 text-white shadow-xl shadow-blue-100 flex justify-between items-center">
         <div>
           <p className="text-blue-100 text-sm font-bold uppercase tracking-wider">
@@ -41,8 +37,6 @@ export const CreditTab = () => {
           <Wallet size={40} className="text-blue-100" />
         </div>
       </div>
-
-      {/* Transactions Table */}
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
         <div className="px-6 py-4 border-b border-gray-50">
           <h3 className="font-bold text-gray-900">Transaction History</h3>

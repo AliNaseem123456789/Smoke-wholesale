@@ -39,8 +39,8 @@ export const AddAddressForm: React.FC<AddAddressFormProps> = ({
           withCredentials: true,
         },
       );
-      setFormData(initialState); // Reset form
-      onSuccess(); // Refresh parent list
+      setFormData(initialState);
+      onSuccess();
     } catch (err: any) {
       console.error("Error adding address:", err.response?.data || err.message);
       alert(

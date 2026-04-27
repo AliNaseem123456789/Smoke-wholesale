@@ -4,9 +4,7 @@ export async function getMe(): Promise<User | null> {
   const res = await fetch(`${API_URL}/auth/me`, {
     credentials: "include",
   });
-
   if (!res.ok) return null;
-
   const data = await res.json();
   return data.user;
 }
@@ -17,13 +15,10 @@ export async function loginApi(email: string, password: string): Promise<User> {
     credentials: "include",
     body: JSON.stringify({ email, password }),
   });
-
   const data = await res.json();
-
   if (!res.ok) {
     throw new Error(data.message || "Login failed");
   }
-
   return data.user;
 }
 export async function registerApi(payload: RegistrationData): Promise<User> {
@@ -32,13 +27,10 @@ export async function registerApi(payload: RegistrationData): Promise<User> {
     headers: { "Content-Type": "application/json", credentials: "include" },
     body: JSON.stringify(payload),
   });
-
   const data = await res.json();
-
   if (!res.ok) {
     throw new Error(data.message || "Registration failed");
   }
-
   return data.user;
 }
 export async function logoutApi(): Promise<void> {

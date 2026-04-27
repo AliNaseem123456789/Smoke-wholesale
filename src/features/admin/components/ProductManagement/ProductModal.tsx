@@ -11,7 +11,6 @@ import {
   Info,
   Briefcase,
 } from "lucide-react";
-
 export const ProductModal = ({
   isOpen,
   onClose,
@@ -21,7 +20,6 @@ export const ProductModal = ({
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
   const [formData, setFormData] = useState({
     title: "",
     brand: "",
@@ -29,7 +27,6 @@ export const ProductModal = ({
     description: "",
     category: "",
   });
-
   useEffect(() => {
     if (initialData && isOpen) {
       setFormData({
@@ -52,7 +49,6 @@ export const ProductModal = ({
     }
     setFile(null);
   }, [initialData, isOpen]);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -60,33 +56,27 @@ export const ProductModal = ({
       setPreview(URL.createObjectURL(selectedFile));
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const submissionData = {
         ...formData,
         price: parseFloat(formData.price) || 0,
       };
-
       let productId = initialData?.id;
-
       if (initialData) {
         await adminService.updateProduct(productId, submissionData);
       } else {
         const newProduct = await adminService.createProduct(submissionData);
         productId = newProduct.id;
       }
-
       if (file && productId) {
         const imageUrl = await adminService.uploadProductImage(file, productId);
         await adminService.updateProduct(productId, {
           image_url: imageUrl,
         });
       }
-
       toast.success(initialData ? "Product updated!" : "Product created!");
       onSuccess();
       onClose();
@@ -99,9 +89,7 @@ export const ProductModal = ({
       setLoading(false);
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
@@ -116,7 +104,6 @@ export const ProductModal = ({
             <X size={20} />
           </button>
         </div>
-
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
@@ -132,7 +119,6 @@ export const ProductModal = ({
               }
             />
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-1">
@@ -193,7 +179,6 @@ export const ProductModal = ({
               }
             />
           </div>
-
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Product Image
@@ -219,7 +204,6 @@ export const ProductModal = ({
               />
             </div>
           </div>
-
           <button
             type="submit"
             disabled={loading}

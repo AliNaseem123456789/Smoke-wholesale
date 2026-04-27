@@ -24,7 +24,6 @@ export const useUpdateProfile = () => {
         setTimeout(() => setSuccess(false), 3000);
       }
     } catch (err: any) {
-      // Axios stores the error message here
       setError(err.response?.data?.message || "Failed to update profile");
     } finally {
       setLoading(false);

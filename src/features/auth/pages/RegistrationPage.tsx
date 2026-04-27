@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
-// import { useAuth, RegistrationData } from '../context/AuthContext';
-import { useAuth } from '../context/AuthContext';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const RegistrationPage: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,38 +19,35 @@ export const RegistrationPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (formData.password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       return;
     }
 
     if (formData.password.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error("Password must be at least 8 characters");
       return;
     }
-
     setIsLoading(true);
-
     try {
       await register({
         email: formData.email,
         password: formData.password,
       });
 
-      toast.success('Registration successful!');
-      navigate('/');
+      toast.success("Registration successful!");
+      navigate("/");
     } catch (err: any) {
-      toast.error(err.message || 'Registration failed');
+      toast.error(err.message || "Registration failed");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 transition-colors duration-200">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md border dark:border-gray-700">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
           Create Account
         </h2>
 
@@ -65,7 +59,7 @@ export const RegistrationPage: React.FC = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full border p-3 rounded"
+            className="w-full border p-3 rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
           />
 
           <input
@@ -75,7 +69,7 @@ export const RegistrationPage: React.FC = () => {
             required
             value={formData.password}
             onChange={handleChange}
-            className="w-full border p-3 rounded"
+            className="w-full border p-3 rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
           />
 
           <input
@@ -84,23 +78,23 @@ export const RegistrationPage: React.FC = () => {
             required
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full border p-3 rounded"
+            className="w-full border p-3 rounded bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
           />
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 rounded font-semibold disabled:bg-gray-400"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold disabled:bg-gray-400 dark:disabled:bg-gray-600 transition-colors"
           >
-            {isLoading ? 'Creating Account...' : 'Register'}
+            {isLoading ? "Creating Account..." : "Register"}
           </button>
         </form>
 
-        <p className="text-center text-sm mt-4">
-          Already have an account?{' '}
+        <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-400">
+          Already have an account?{" "}
           <button
-            onClick={() => navigate('/login')}
-            className="text-blue-600 font-semibold"
+            onClick={() => navigate("/login")}
+            className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
           >
             Login
           </button>
