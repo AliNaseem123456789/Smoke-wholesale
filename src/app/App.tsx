@@ -31,6 +31,9 @@ import { UserManagement } from "../features/admin/pages/UserManagement";
 import { AdminRoute } from "../features/admin/components/AdminRoute";
 import { ProductManagement } from "../features/admin/pages/ProductManagement";
 import { AdminDashboard } from "../features/admin/pages/AdminDashboard";
+
+import FloatingChat from "../features/chatbot/FloatingChatbot";
+import { CHATBOT_URL } from "../config/config";
 const BrandProductsPageWrapper = () => {
   const { brandName } = useParams();
   const navigate = useNavigate();
@@ -131,6 +134,14 @@ function App() {
 
       <Footer />
       <Toaster position="top-center" richColors />
+      <FloatingChat
+        botId="smoking"
+        apiUrl={CHATBOT_URL}
+        title="SmokeBuddy Assistant"
+        welcomeMessage="Hello! Welcome to SmokeBuddy Wholesale. Need help with products, wholesale pricing, or orders? I'm here to help! 🔥"
+        primaryColor="#8B5CF6"
+        userId={user?.id}
+      />
     </>
   );
 }

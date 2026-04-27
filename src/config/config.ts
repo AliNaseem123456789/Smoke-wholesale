@@ -4,3 +4,6 @@ export const API_BASE_URL = "https://smoke-wholesale-backend-mczv.onrender.com";
 export const API_PREFIX = "/api";
 
 export const API_URL = `${API_BASE_URL}${API_PREFIX}`;
+
+export const CHATBOT_URL = "https://chatbot-gateway.onrender.com";
+// export const CHATBOT_URL = "http://localhost:8000";
