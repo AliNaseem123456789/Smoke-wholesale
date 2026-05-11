@@ -35,13 +35,9 @@ const FloatingChat: React.FC<FloatingChatProps> = ({
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  // Track unread messages
   useEffect(() => {
     if (!isOpen && messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
@@ -51,14 +47,11 @@ const FloatingChat: React.FC<FloatingChatProps> = ({
     }
   }, [messages, isOpen]);
 
-  // Reset unread when opened
   useEffect(() => {
     if (isOpen) {
       setUnreadCount(0);
     }
   }, [isOpen]);
-
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen && !isMinimized) {
       setTimeout(() => inputRef.current?.focus(), 100);
