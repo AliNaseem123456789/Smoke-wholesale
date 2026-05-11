@@ -684,7 +684,7 @@ MIT License - See LICENSE file for details
 
 ## Contributors
 
-Your Name - Lead Developer
+Muhammad Ali Naseem- Lead Developer
 
 ## Support
 
