@@ -572,14 +572,8 @@ EOF
 ```bash
 npm run dev
 ```
-
 ---
 
-## 4. **Environment Variables Table** (Needs Improvement)
-
-Replace your current .env blocks with:
-
-```markdown
 ### Environment Variables
 
 #### Backend (.env)
@@ -597,7 +591,7 @@ Replace your current .env blocks with:
 |----------|----------|---------|-------------|
 | `VITE_API_URL` | Yes | http://localhost:5000/api | Backend API endpoint |
 | `VITE_CHATBOT_URL` | No | - | AI chatbot service URL |
-```
+
 ## Key Frontend Patterns
 
 ### API Client Configuration
@@ -697,7 +691,7 @@ Your Name - Lead Developer
 For issues or questions:
 
 - GitHub Issues
-- Email: support@example.com
+- Email: alinaseem21102002@gmail.com
 
 ## Project Status
 
